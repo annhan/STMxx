@@ -12,6 +12,8 @@ void vApplicationStackOverflowHook( xTaskHandle pxTask, signed char *pcTaskName 
 
  1. tối ưu code.
  2. Chuyển local variable thành gloal variable, static variable ( biến này lưu độc lập ngoài vùng nhớ của RTOS )
- 3. Cấp thêm bộ nhớ cho bộ nhớ heap của RTOS, bằng cách tăng giá trị configTOTAL_HEAP_SIZE trong file FreeRTOSConfig.h,
+ 3. Cấp thêm bộ nhớ cho bộ nhớ heap của RTOS, bằng cách tăng giá trị ```configTOTAL_HEAP_SIZE``` trong file FreeRTOSConfig.h,
+
+ configTOTAL_HEAP_SIZE được tính theo words (1word = 2byte)
 
 ![phân vùng nhớ FreeRTOS](doc/rtos_hinh1.png)
