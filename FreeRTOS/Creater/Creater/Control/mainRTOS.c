@@ -1,21 +1,28 @@
 #include "mainRTOS.h"
 #include "FreeRTOS.h"
 #include "stm32f1xx_hal.h"
+/**
+ * Khai bao Task 
+*/
 osThreadId_t BlinkID;
 const osThreadAttr_t BlinkTask_attributes = {
   .name = "Blink",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+
+/**
+ * Khai bao Task 
+*/
 osThreadId_t SendDataID;
 const osThreadAttr_t SendDataTask_attributes = {
   .name = "SenData",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
-
-
-
+/**
+ * Main
+*/
 void mainRTOS(){
     /*osThreadDef(BlinkLoop, osPriorityNormal, 0, 128 * 4);
     osThreadDef(DataLoop,osPriorityNormal, 0, 128 * 4);
