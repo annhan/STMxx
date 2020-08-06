@@ -1,6 +1,8 @@
 #MicroXplorer Configuration settings - do not modify
+FREERTOS.BinarySemaphores01=osSema_Ex,Dynamic,NULL
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK
+FREERTOS.IPParameters=Tasks01,FootprintOK,Mutexes01,BinarySemaphores01
+FREERTOS.Mutexes01=osMu_Ex,Dynamic,NULL
 FREERTOS.Tasks01=defaultTask,24,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 GPIO.groupedBy=Group By Peripherals

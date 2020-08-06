@@ -31,5 +31,10 @@ void BlinkLoop(void * argument){
     }
 }
 void DataLoop(void * argument){
-    
+  uint16_t tam = 0;
+    for(;;){
+      tam ++ ;
+      HAL_UART_Transmit(&huart1,&tam,1,100);
+      osDelay(100);
+    }
 }

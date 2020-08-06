@@ -53,8 +53,18 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for osMu_Ex */
+osMutexId_t osMu_ExHandle;
+const osMutexAttr_t osMu_Ex_attributes = {
+  .name = "osMu_Ex"
+};
+/* Definitions for osSema_Ex */
+osSemaphoreId_t osSema_ExHandle;
+const osSemaphoreAttr_t osSema_Ex_attributes = {
+  .name = "osSema_Ex"
+};
 /* USER CODE BEGIN PV */
-osSemaphoreId sem_uart_dma;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,15 +117,20 @@ int main(void)
 
   /* Init scheduler */
   osKernelInitialize();
+  /* Create the mutex(es) */
+  /* creation of osMu_Ex */
+  osMu_ExHandle = osMutexNew(&osMu_Ex_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
+  /* Create the semaphores(s) */
+  /* creation of osSema_Ex */
+  osSema_ExHandle = osSemaphoreNew(1, 1, &osSema_Ex_attributes);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
-   osSemaphoreDef(sem_uart_dma);
-    sem_uart_dma = osSemaphoreCreate(osSemaphore(sem_uart_dma), 1);
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -257,11 +272,11 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  for(;;)
-  {
+
     mainRTOS();
     vTaskDelete(defaultTaskHandle);
-  }
+  
+  
   /* USER CODE END 5 */
 }
 
