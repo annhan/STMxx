@@ -30,7 +30,9 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+void vApplicationStackOverflowHook(xTaskHandle *pxTask, signed portCHAR *pcTaskName) {
 
+}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
