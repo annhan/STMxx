@@ -29,16 +29,17 @@ typedef struct{
       uint8_t Parameter2; // 1 byte
       uint16_t Parameter3; // 2 byte
       uint32_t Parameter4; // 4 byte
+      uint32_t Parameter5; // 4 byte
 } tpSettings;
 
 tpSettings settings;
 
 void tangdata(){
   osMutexWait(osMu_ExHandle,osWaitForever);
-    settings.Parameter1++;
-    settings.Parameter2++;
-    settings.Parameter3++;
-    settings.Parameter4++;
+  settings.Parameter1++;
+  settings.Parameter2=settings.Parameter2 + 2;
+  settings.Parameter3++;
+  settings.Parameter4=settings.Parameter4 + 3;
   osMutexRelease(osMu_ExHandle);
 }
 /**
@@ -62,8 +63,8 @@ void BlinkLoop(void * argument){
  */
 void DataLoop(void * argument){
     readSector(0x8007f00,&settings,sizeof(tpSettings));
+    my_printf("Size %d\r\n", sizeof(tpSettings));
     tangdata();
-    //eraseSector(0x8007f00);
     writeSector(0x8007f00,&settings,sizeof(tpSettings));
     for(;;){
       my_printf("Today's %s: %d-%d-%d\r\n", settings.Parameter1, settings.Parameter2, settings.Parameter3, settings.Parameter4);

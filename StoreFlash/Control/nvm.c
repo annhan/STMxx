@@ -1,6 +1,7 @@
 // low level routines for programming flash memory.  Interrupts should be disabled when doing any of this.
 #include <stdint.h>
 #include "nvm.h"
+#include "printEx.h"
 #define BIT0 (1 << 0)
 #define BIT1 (1 << 1)
 #define BIT2 (1 << 2)
@@ -72,7 +73,7 @@ void eraseSector(uint32_t SectorStartAddress)
     while(FLASH->SR & BIT0); // wait while busy
 }
 void readSector(uint32_t SectorStartAddress, void * values, uint16_t size)
-{
+{   
     uint16_t *AddressPtr;
     uint16_t *valuePtr;
     AddressPtr = (uint16_t *)SectorStartAddress;
@@ -80,7 +81,8 @@ void readSector(uint32_t SectorStartAddress, void * values, uint16_t size)
     size = size/2; // incoming value is expressed in bytes, not 16 bit words
     while(size)
     {
-        *((uint16_t *)valuePtr)=*((uint16_t *)AddressPtr);
+        *(valuePtr)=*(AddressPtr); 
+        //*((uint16_t *)valuePtr)=*((uint16_t *)AddressPtr); // Cái nào cũng được
         valuePtr++;
         AddressPtr++;
         size--;
