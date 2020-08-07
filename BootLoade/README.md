@@ -1,0 +1,2 @@
+- Tạo chương trình bootloader trước khi chạy ứng dụng chính
+- STM sẽ begin code tại địa chỉ 0x8000000, ta sẽ viết boodleader tại đây và main code sẽ dời lại 1 địa chỉ khác phía sau.
