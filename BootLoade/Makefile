@@ -203,12 +203,21 @@ FIRMWARE = $(BUILD_DIR)/$(TARGET).elf
 load:
 	$(OPENOCD) \
 		-c "program $(FIRMWARE) verify reset exit"
-flash:
+flash_app:
 	$(OPENOCD) -c init \
 		-c 'reset halt' \
-		-c 'flash write_image erase $(FIRMWARE)' \
+		-c 'flash write_image erase $(FIRMWARE) 0x80004000' \
 		-c 'reset run' \
 		-c exit
+#--reset write $(TARGET).bin $(ADDRESS)
+################
+## Build bootloader
+####################
+buildBoot:
+	$(MAKE) -f bootloader/Makefile
+flashBoot:
+	$(MAKE) -f  bootloader/Makefile flash
+flash_all:
 
 #############################
 #######################################
