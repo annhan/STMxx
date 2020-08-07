@@ -24,8 +24,8 @@ FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 4K //bắt đầu ở 0x800000
 }
  ```
 
- *** File của MainApp ***
- -----------
+ ***File của MainApp ***
+ ----------------
 
  1. File ld.
 
