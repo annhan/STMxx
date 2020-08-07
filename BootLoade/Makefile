@@ -199,17 +199,14 @@ clean:
 	-rm -fR $(BUILD_DIR)
 OPENOCD := openocd -f interface/stlink-v2.cfg \
 		-f target/bluepill.cfg
-FIRMWARE = $(BUILD_DIR)/$(TARGET).elf
-load:
-	$(OPENOCD) \
-		-c "program $(FIRMWARE) verify reset exit"
-flash_app:
-	$(OPENOCD) -c init \
-		-c 'reset halt' \
-		-c 'flash write_image erase $(FIRMWARE) 0x80004000' \
-		-c 'reset run' \
-		-c exit
-#--reset write $(TARGET).bin $(ADDRESS)
+FIRMWARE = $(BUILD_DIR)/$(TARGET).bin
+flash_mainapp:
+	$(OPENOCD) -c  "adapter_khz 1000" \  
+	-c "transport select swd" \  
+	-c "init" \
+	-c "program $(FIRMWARE)0x08001000 verify reset" \ #write file bin tại address
+	-c "exit"
+#https://support.particle.io/hc/en-us/articles/360039251414-JTAG-and-SWD-Guide
 ################
 ## Build bootloader
 ####################
@@ -217,7 +214,13 @@ buildBoot:
 	$(MAKE) -f bootloader/Makefile
 flashBoot:
 	$(MAKE) -f  bootloader/Makefile flash
-flash_all:
+flash_all: #write 2 flash bootloader va mainapp
+	$(OPENOCD) -c  "adapter_khz 1000" \  
+	-c "transport select swd" \  
+	-c "init" \
+	-c "program /bootloader/build/Bootloader.bin verify 0x08000000" \
+	-c "program $(FIRMWARE)verify 0x08060000" \
+	-c "exit"
 
 #############################
 #######################################

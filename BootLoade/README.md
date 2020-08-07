@@ -68,3 +68,13 @@ IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
 } 
 ```
 Maincode __image_addr không phải là entry point(```Reset_Handler```) của ứng dụng, nó thật sự là giá trị con trỏ stack pointer (SP). Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị trí của hàm ```Reset_Handler```
+
+*** Sữa make file ***
+------
+
+Chỉ khai báo những cái cần:
+ Sữa LDSCRIPT = bootloader/STM32F103C8Tx_FLASH.ld
+ BUILD_DIR = bootloader/build
+ C_SOURCES =  \
+bootloader/src/main.c \
+bootloader/src/system_stm32f1xx.c
