@@ -36,14 +36,15 @@ RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 20K
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
 }
 ```
-ta sữa lại
+ ta sữa lại
 ```
 PROVIDE(__image_addr = 0x08010000); //khai bao biến chưa địa chỉ begin maincode để gọi trong hàm main.c của bootloader
 MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 20K
 FLASH (rx)      : ORIGIN = 0x8001000, LENGTH = (64-4)K 
-//chiều dài ngắn đi 4K do dùng cho bootloader địa chỉ bằng 0x80000000 + 4Kb=4*1024=4096 (DEC) = 1000 (HEX) ->ORIGIN = 0x8001000
+//chiều dài ngắn đi 4K do dùng cho bootloader.
+//Địa chỉ bằng 0x80000000 + 4Kb=4*1024=4096 (DEC) = 1000 (HEX) ->ORIGIN = 0x8001000
 }
 ```
 
@@ -51,10 +52,10 @@ FLASH (rx)      : ORIGIN = 0x8001000, LENGTH = (64-4)K
 
 Ta cần remap interrupt vector table đến vị trí đầu của chương trình ứng dụng:
 IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
-```/* Do remap interrupt vector */ SCB->VTOR = IMAGE_ADDR;  ```
-```/* Do remap interrupt vector */ SCB->VTOR = 0x08001000;  ```
 
-*** Code Jump tới mainCode ***
+```/* Do remap interrupt vector */ SCB->VTOR = IMAGE_ADDR;  ``` Hoặc ```/* Do remap interrupt vector */ SCB->VTOR = 0x08001000;  ```
+
+***Code Jump tới mainCode ***
 ---------------
 
 ```
@@ -67,9 +68,11 @@ IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
  return 0;
 } 
 ```
-Maincode __image_addr không phải là entry point(```Reset_Handler```) của ứng dụng, nó thật sự là giá trị con trỏ stack pointer (SP). Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị trí của hàm ```Reset_Handler```
+Maincode __image_addr không phải là entry point(```Reset_Handler```) của ứng dụng, nó thật sự là giá trị con trỏ stack pointer (SP). 
 
-*** Sữa make file ***
+Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị trí của hàm ```Reset_Handler```
+
+***Sữa make file ***
 ------
 
 Chỉ khai báo những cái cần:
