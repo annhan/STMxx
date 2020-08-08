@@ -72,7 +72,7 @@ Maincode __image_addr không phải là entry point(```Reset_Handler```) của �
 
 Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị trí của hàm ```Reset_Handler```
 
-***Sữa make file ***
+***Sữa make file***
 ------
 
 Chỉ khai báo những cái cần:
