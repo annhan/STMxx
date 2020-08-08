@@ -24,7 +24,7 @@ FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 4K //bắt đầu ở 0x800000
 }
  ```
 
- ***File của MainApp ***
+ ***File của MainApp.***
  ----------------
 
  1. File ld.
@@ -55,7 +55,7 @@ IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
 
 ```/* Do remap interrupt vector */ SCB->VTOR = IMAGE_ADDR;  ``` Hoặc ```/* Do remap interrupt vector */ SCB->VTOR = 0x08001000;  ```
 
-***Code Jump tới mainCode ***
+***Code Jump tới mainCode***
 ---------------
 
 ```
