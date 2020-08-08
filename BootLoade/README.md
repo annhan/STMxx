@@ -27,7 +27,7 @@ FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 4K //bắt đầu ở 0x800000
  ***File của MainApp.***
  ----------------
 
- 1. File ld.
+ ***1. File ld.***
 
 ```
 MEMORY
@@ -48,7 +48,7 @@ FLASH (rx)      : ORIGIN = 0x8001000, LENGTH = (64-4)K
 }
 ```
 
-2. File system_stm32fAxx.c
+***2. File system_stm32fAxx.c***
 
 Ta cần remap interrupt vector table đến vị trí đầu của chương trình ứng dụng:
 IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
