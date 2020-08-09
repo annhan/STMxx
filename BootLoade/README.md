@@ -24,10 +24,10 @@ FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 4K //bắt đầu ở 0x800000
 }
  ```
 
- ***File của MainApp ***
+ ***File của MainApp.***
  ----------------
 
- 1. File ld.
+ ***1. File ld.***
 
 ```
 MEMORY
@@ -48,14 +48,14 @@ FLASH (rx)      : ORIGIN = 0x8001000, LENGTH = (64-4)K
 }
 ```
 
-2. File system_stm32fAxx.c
+***2. File system_stm32fAxx.c***
 
 Ta cần remap interrupt vector table đến vị trí đầu của chương trình ứng dụng:
 IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
 
 ```/* Do remap interrupt vector */ SCB->VTOR = IMAGE_ADDR;  ``` Hoặc ```/* Do remap interrupt vector */ SCB->VTOR = 0x08001000;  ```
 
-***Code Jump tới mainCode ***
+***Code Jump tới mainCode***
 ---------------
 
 ```
@@ -72,7 +72,7 @@ Maincode __image_addr không phải là entry point(```Reset_Handler```) của �
 
 Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị trí của hàm ```Reset_Handler```
 
-***Sữa make file ***
+***Sữa make file***
 ------
 
 Chỉ khai báo những cái cần:
