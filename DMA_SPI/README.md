@@ -1,13 +1,17 @@
-T = (1/APB_TIM_CLK in MHz) * (PRESCALER_Value + 1) * (PERIOD_Value + 1)
-suppose:
-APB_TIM_CLK = 8MHz
-PRESCALER_Value = 999
-PERIOD_Value = 7999
-the formula is:
-T= (1/8*10^6) * (999+1) * (7999+1) = 1s
-
-
 Cài đặt ngắt timer định kì 
 -----
 
 - Timer 1 chọn chế độ ngắt là Timer_Update Interrup
+- Cách tính thời gian
+***T= T = (1/APB_TIM_CLK in MHz) * (PRESCALER_Value + 1) * (PERIOD_Value + 1)***
+```
+APB_TIM_CLK = 72Mhz
+PRESCALER_Value = 1000
+PERIOD_Value = 7200
+->T=(1001 * 7201)/72000000=0.1s
+```
+```
+Tính T = 0.5s
+(1001 * A ) = 72000000 * 0.5 = 36000000
+->A = 35964 ->PERIOD_Value = 35963
+```
