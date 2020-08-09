@@ -1,6 +1,7 @@
 Timer của STM có nhiều chế độ:
 
-- [Timer Interrupt]( Timer Interrupt.md).
-- [Counter Mode](Counter Mode.md).
-- [PWM Mode](PWM Mode.md)
-- ..
+- [Timer Interrupt]( TimerInterrupt.md).
+- [Counter Mode](CounterMode.md).
+- [PWM Mode](PWMMode.md)
+- [input capture mode](inputCaptureMode.md)
+- [Encoder Mode](EncoderMode.md)
