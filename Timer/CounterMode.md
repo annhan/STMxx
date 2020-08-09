@@ -1,9 +1,11 @@
 1. Cấu hình CubeMX.
+----------
 
 Giống cấu hình với ngắt tràn timer.
 ![Hinh](docs/CounterMode.png)
 
 2. mainCode
+-----
 
 ```c
 #include "main.h"
