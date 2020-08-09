@@ -58,15 +58,32 @@ IMAGE_ADDR = 0x08000000  + BOOTLOADER_MAX_SIZE = 0x8001000
 ***Code Jump tới mainCode***
 ---------------
 
-```
- /* Jump to application */
- __image_addr = 0x08001000 ;
- asm( "ldr   r1, =(__image_addr + 4)\n\t"
-      "ldr   r0, [r1]\n\t"
-      "bx    r0" );
-
- return 0;
-} 
+```c
+#define APP_ADDRESS           0x08002000U
+typedef void (*pFunction)(void);
+/**
+  * @brief This function handles System tick timer.
+  */
+void SysTick_Handler(void);
+void Bootloader_JumpToApplication(void)
+{
+    uint32_t  JumpAddress = *(__IO uint32_t*)(APP_ADDRESS + 4);
+    pFunction Jump = (pFunction)JumpAddress;
+    
+    HAL_RCC_DeInit();
+    HAL_DeInit();
+    
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 0;
+    SysTick->VAL  = 0;
+    
+#if (SET_VECTOR_TABLE)
+    SCB->VTOR = APP_ADDRESS;
+#endif
+    
+    __set_MSP(*(__IO uint32_t*)APP_ADDRESS);
+    Jump();
+}
 ```
 Maincode __image_addr không phải là entry point(```Reset_Handler```) của ứng dụng, nó thật sự là giá trị con trỏ stack pointer (SP). 
 
@@ -76,8 +93,22 @@ Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị tr�
 ------
 
 Chỉ khai báo những cái cần:
+
  Sữa LDSCRIPT = bootloader/STM32F103C8Tx_FLASH.ld
+ 
  BUILD_DIR = bootloader/build
+ 
  C_SOURCES =  \
 bootloader/src/main.c \
 bootloader/src/system_stm32f1xx.c
+
+***OpenOCD***
+--------------
+```
+flash_all: #write 2 flash bootloader va mainapp
+	$(OPENOCD)	-c "init" \
+	-c "program $(FIRMWARE) 0x8002000 verify" \
+	-c "program $(BOOTLOADER) 0x08000000 verify" \ //ghi file bin với địa chỉ cụ thể
+	-c "exit"
+ ```
+ Ghi bộ nhớ vào địa chỉ cụ thể
