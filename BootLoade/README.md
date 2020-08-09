@@ -93,8 +93,22 @@ Giá trị ô nhớ tại vị trí (__image_addr + 4) mới đúng là vị tr�
 ------
 
 Chỉ khai báo những cái cần:
+
  Sữa LDSCRIPT = bootloader/STM32F103C8Tx_FLASH.ld
+ 
  BUILD_DIR = bootloader/build
+ 
  C_SOURCES =  \
 bootloader/src/main.c \
 bootloader/src/system_stm32f1xx.c
+
+***OpenOCD***
+--------------
+```
+flash_all: #write 2 flash bootloader va mainapp
+	$(OPENOCD)	-c "init" \
+	-c "program $(FIRMWARE) 0x8002000 verify" \
+	-c "program $(BOOTLOADER) 0x08000000 verify" \ //ghi file bin với địa chỉ cụ thể
+	-c "exit"
+ ```
+ Ghi bộ nhớ vào địa chỉ cụ thể
