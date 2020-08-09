@@ -34,7 +34,7 @@ void mainRTOS(){
 void BlinkLoop(void * argument){
     for(;;){
         HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-        osDelay(1000);
+        osDelay(2000);
     }
 }
 void DataLoop(void * argument){

@@ -89,12 +89,14 @@ void StartDefaultTask(void *argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  SCB->VTOR = (uint32_t) 0x08002000;
+  __enable_irq();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_DeInit();
   HAL_Init();
 
   /* USER CODE BEGIN Init */

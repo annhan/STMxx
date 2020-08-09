@@ -2,8 +2,8 @@
 ######################################
 # target
 ######################################
-TARGET = Bootloader
-
+#TARGET = Bootloader
+TARGET = Creater
 
 ######################################
 # building variables
@@ -25,12 +25,19 @@ BUILD_DIR = bootloader/build
 ######################################
 # C sources
 C_SOURCES =  \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c \
+Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c \
 bootloader/src/main.c \
 bootloader/src/system_stm32f1xx.c
 
-# ASM sources
+# ASM sources #bootloader/src/stm32f1xx_it.c \
+
 ASM_SOURCES =  \
-startup_stm32f103xb.s
+bootloader/src/bootloader.s
 
 
 #######################################
@@ -80,16 +87,13 @@ C_DEFS =  \
 
 # AS includes
 AS_INCLUDES =  \
--ICore\Inc
+-Ibootloader\Inc
 
 # C includes
 C_INCLUDES =  \
--ICore/Inc \
+-Ibootloader/Inc \
 -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
 -IDrivers/STM32F1xx_HAL_Driver/Inc \
--IMiddlewares/Third_Party/FreeRTOS/Source/include \
--IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
--IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
 -IDrivers/CMSIS/Include
 
@@ -112,7 +116,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = bootloader/STM32F103C8Tx_FLASH.ld
+LDSCRIPT = bootloader/FlashBootLoader.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -161,16 +165,24 @@ OPENOCD := openocd -f interface/stlink-v2.cfg \
 		-f target/bluepill.cfg
 FIRMWARE = $(BUILD_DIR)/$(TARGET).elf
 Boot = $(BUILD_DIR)/$(TARGET).bin
-load:
-	openocd -f target/bluepill.cfg \
-	-c "program $(Boot) exit 0x08000000"
-#file bin
-flash_app:
+bootbegin:
 	$(OPENOCD) -c init \
 		-c 'reset halt' \
-		-c 'flash write_image $(FIRMWARE) 0x80000000' \
+		-c 'flash write_image erase $(FIRMWARE)' \
 		-c 'reset run' \
 		-c exit
+boottt:
+	$(OPENOCD) -c init \
+		-c 'reset halt' \
+		-c 'flash write_image erase build/$(TARGET).elf ' \
+		-c 'reset run' \
+		-c exit
+#file bin
+flash:
+	$(OPENOCD) -c "init" \
+	-c "program $(Boot) 0x08000000 verify" \
+	-c "exit"
+
 #--reset write $(TARGET).bin $(ADDRESS)
 
 #############################
