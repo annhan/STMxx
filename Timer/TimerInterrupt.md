@@ -1,5 +1,8 @@
 Cài đặt ngắt timer định kì
-Timer 1 chọn chế độ ngắt là Timer_Update Interrup
+---------
+
+Timer 1 chọn chế độ ngắt là Timer_Update Interrup.
+
 Cách tính thời gian T **T = (1/APB_TIM_CLK in MHz) * (PRESCALER_Value + 1) * (PERIOD_Value + 1)**
 ```
 APB_TIM_CLK = 72Mhz
