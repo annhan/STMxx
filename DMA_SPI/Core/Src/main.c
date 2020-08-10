@@ -25,6 +25,10 @@
 /* USER CODE BEGIN Includes */
 uint8_t Rx_data[2];
 uint8_t buffer[2];
+uint16_t spiSendDevice1[1] = {0xFFFF};
+uint16_t spiGetDevice1[1] = {0xFFFF};
+uint16_t spiSendDevice2[1] = {0xFFFF};
+uint16_t spiGetDevice2[1] = {0xFFFF};
 volatile  bool Transfer_cplt = false;
 /* USER CODE END Includes */
 
@@ -45,6 +49,8 @@ volatile  bool Transfer_cplt = false;
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
+DMA_HandleTypeDef hdma_spi1_rx;
+DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim1;
 
@@ -259,7 +265,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 1000;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 35963;
+  htim1.Init.Period = 7200;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -359,6 +365,12 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Channel2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+  /* DMA1_Channel3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
   /* DMA1_Channel4_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
@@ -409,11 +421,45 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-// Hàm này ngă�?t timer tràn đê�?m sẽ gọi lại
+
+//Ngat nhan SPI cua device 1
+void spi_device1_cb(){
+  HAL_GPIO_WritePin(SS1_GPIO_Port, SS1_Pin, GPIO_PIN_SET);
+  uint16_t dataGet = spiGetDevice1[0];
+}
+
+//Ngat nhan SPI cua device 
+void spi_device2_cb(){
+  HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
+  uint16_t dataGet = spiGetDevice2[0];
+}
+
+/**
+ * Ngat SPI
+ * Sẽ xa�?c dinh dia chi cua bien nhan va goi callback lai tung ham
+ */
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if(hspi1.pRxBuffPtr == (uint8_t*)spiGetDevice1)
+        spi_device1_cb();
+    else if (hspi1.pRxBuffPtr == (uint8_t*)spiGetDevice2)
+        spi_device2_cb();
+}
+
+
+//Ngat tranTimer
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
   if(htim->Instance == TIM1 ){
-    //tràn timer 
-    HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+    //tràn timer
+    if (hspi1.pTxBuffPtr == (uint8_t*)spiSendDevice2) { //check nê�?u lần trươ�?c send device1 thì lần này send device2
+      HAL_GPIO_WritePin(SS1_GPIO_Port,SS1_Pin,GPIO_PIN_RESET);
+      HAL_SPI_TransmitReceive_DMA(&hspi1,(uint8_t*)spiSendDevice1,(uint8_t*)spiGetDevice1,1); //(uint8_t*)
+    }
+    else {
+      HAL_GPIO_WritePin(SS2_GPIO_Port,SS2_Pin,GPIO_PIN_RESET);
+      HAL_SPI_TransmitReceive_DMA(&hspi1,(uint8_t*)spiSendDevice2,(uint8_t*)spiGetDevice2,1); //(uint8_t*)
+    }
+
   }
 }
 
