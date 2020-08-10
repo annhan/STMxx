@@ -18,4 +18,4 @@ Tính T = 0.5s
 
 ***Code***
 --------
-Xem phần [DMA_SPI](DMA_SPI) phần này sẽ định thời timer ngắt trong vòng 0.5s để gửi SPI.
+Xem phần [DMA_SPI](../DMA_SPI) phần này sẽ định thời timer ngắt trong vòng 0.5s để gửi SPI.
