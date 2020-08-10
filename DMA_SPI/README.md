@@ -1,17 +1,3 @@
-Cài đặt ngắt timer định kì 
------
-
-- Timer 1 chọn chế độ ngắt là Timer_Update Interrup
-- Cách tính thời gian
-***T= T = (1/APB_TIM_CLK in MHz) * (PRESCALER_Value + 1) * (PERIOD_Value + 1)***
-```
-APB_TIM_CLK = 72Mhz
-PRESCALER_Value = 1000
-PERIOD_Value = 7200
-->T=(1001 * 7201)/72000000=0.1s
-```
-```
-Tính T = 0.5s
-(1001 * A ) = 72000000 * 0.5 = 36000000
-->A = 35964 ->PERIOD_Value = 35963
-```
+- Định thời ngắt timer 0.5s.
+- Mỗi 0.5s thì chương trình sẽ kiểm tra và gửi SPI qua DMA tới thiết bị. Mỗi thiết bị sẽ được gửi xen kẽ bằng cách so sánh trực tiếpđịa chỉ của biếntruyeefnn vào.
+- Khi gửi hoặc nhận xong, thì SPi sẽ ngắt và ta nhận dữ liệu ueafacssssssssssss
