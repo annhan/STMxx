@@ -23,12 +23,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "user_spi.h"
+
 uint8_t Rx_data[2];
 uint8_t buffer[2];
-uint16_t spiSendDevice1[1] = {0xFFFF};
-uint16_t spiGetDevice1[1] = {0xFFFF};
-uint16_t spiSendDevice2[1] = {0xFFFF};
-uint16_t spiGetDevice2[1] = {0xFFFF};
+
 volatile  bool Transfer_cplt = false;
 /* USER CODE END Includes */
 
@@ -44,7 +43,7 @@ volatile  bool Transfer_cplt = false;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+ SPIConf* SPID ;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -153,6 +152,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+  SPID = user_spi_creat(&hspi1);
   HAL_TIM_Base_Start_IT(&htim1); //goi ham này để begin interrup
   HAL_UART_Receive_DMA(&huart1, (uint8_t *)Rx_data, 2); // 
   /* USER CODE END 2 */
@@ -225,11 +225,11 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -265,7 +265,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 1000;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 7200;
+  htim1.Init.Period = 718;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -411,55 +411,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SS2_Pin SS1_Pin */
-  GPIO_InitStruct.Pin = SS2_Pin|SS1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
 }
 
 /* USER CODE BEGIN 4 */
 
-//Ngat nhan SPI cua device 1
-void spi_device1_cb(){
-  HAL_GPIO_WritePin(SS1_GPIO_Port, SS1_Pin, GPIO_PIN_SET);
-  uint16_t dataGet = spiGetDevice1[0];
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
+  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+  spi_callback(SPID);
 }
-
-//Ngat nhan SPI cua device 
-void spi_device2_cb(){
-  HAL_GPIO_WritePin(SS2_GPIO_Port, SS2_Pin, GPIO_PIN_SET);
-  uint16_t dataGet = spiGetDevice2[0];
-}
-
-/**
- * Ngat SPI
- * Sẽ xa�?c dinh dia chi cua bien nhan va goi callback lai tung ham
- */
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-    if(hspi1.pRxBuffPtr == (uint8_t*)spiGetDevice1)
-        spi_device1_cb();
-    else if (hspi1.pRxBuffPtr == (uint8_t*)spiGetDevice2)
-        spi_device2_cb();
-}
-
 
 //Ngat tranTimer
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
   if(htim->Instance == TIM1 ){
     //tràn timer
-    if (hspi1.pTxBuffPtr == (uint8_t*)spiSendDevice2) { //check nê�?u lần trươ�?c send device1 thì lần này send device2
-      HAL_GPIO_WritePin(SS1_GPIO_Port,SS1_Pin,GPIO_PIN_RESET);
-      HAL_SPI_TransmitReceive_DMA(&hspi1,(uint8_t*)spiSendDevice1,(uint8_t*)spiGetDevice1,1); //(uint8_t*)
-    }
-    else {
-      HAL_GPIO_WritePin(SS2_GPIO_Port,SS2_Pin,GPIO_PIN_RESET);
-      HAL_SPI_TransmitReceive_DMA(&hspi1,(uint8_t*)spiSendDevice2,(uint8_t*)spiGetDevice2,1); //(uint8_t*)
-    }
-
+    spi_user_send_data(SPID);
   }
 }
 
