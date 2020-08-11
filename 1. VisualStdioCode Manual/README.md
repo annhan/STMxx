@@ -1,7 +1,7 @@
 ***1. Cài enviroment***
 ------------
 
-- Tải [GNU Embedded Toolchain for ARM](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) cài đặt vào ```C:\VSARM\armcc\```
+- [GNU Embedded Toolchain for ARM](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) cài đặt vào ```C:\VSARM\armcc\```
 
 - [ST-Link Tools](https://github.com/texane/stlink/releases) cài vào ```C:\VSARM\stlink\```
 
