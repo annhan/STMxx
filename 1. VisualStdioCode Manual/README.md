@@ -168,7 +168,7 @@ Phần này sẽ tạo 2 task ( 1 để build,  2 là để flash)
 ```
 
 - Phần này cần chỉnh tùy từng dòng chip.
-Mỗi dòng sẽ cần file SVD riêng ta có thể [Dơnload](https://github.com/posborne/cmsis-svd/tree/master/data/STMicro.) tạo đây.
+Mỗi dòng sẽ cần file SVD riêng ta có thể [DownLoad](https://github.com/posborne/cmsis-svd/tree/master/data/STMicro) tại đây.
 Sau khi download đúng chip coipy về bỏ vào thư mục project và edit lại ```sdvFile```
 
 ***6. CubeMX***
