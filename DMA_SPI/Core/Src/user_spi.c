@@ -1,5 +1,6 @@
 #include "user_spi.h"
 #include <stdlib.h>
+
 #define SS2_Pin GPIO_PIN_0
 #define SS2_GPIO_Port GPIOB
 #define SS1_Pin GPIO_PIN_1

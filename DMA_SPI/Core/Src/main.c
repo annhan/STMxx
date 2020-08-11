@@ -43,7 +43,7 @@ volatile  bool Transfer_cplt = false;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
- SPIConf* SPID ;
+ SPIConf* SPI_Sensor ;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -152,7 +152,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  SPID = user_spi_creat(&hspi1);
+  SPI_Sensor = user_spi_creat(&hspi1);
   HAL_TIM_Base_Start_IT(&htim1); //goi ham này để begin interrup
   HAL_UART_Receive_DMA(&huart1, (uint8_t *)Rx_data, 2); // 
   /* USER CODE END 2 */
@@ -417,14 +417,14 @@ static void MX_GPIO_Init(void)
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
   HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-  spi_callback(SPID);
+  spi_callback(SPI_Sensor);
 }
 
 //Ngat tranTimer
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
   if(htim->Instance == TIM1 ){
     //tràn timer
-    spi_user_send_data(SPID);
+    spi_user_send_data(SPI_Sensor);
   }
 }
 
