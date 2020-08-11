@@ -1,3 +1,3 @@
-- Định thời ngắt timer 0.5s.
-- Mỗi 0.5s thì chương trình sẽ kiểm tra và gửi SPI qua DMA tới thiết bị. Mỗi thiết bị sẽ được gửi xen kẽ bằng cách so sánh trực tiếpđịa chỉ của biếntruyeefnn vào.
-- Khi gửi hoặc nhận xong, thì SPi sẽ ngắt và ta nhận dữ liệu ueafacssssssssssss
+- Định thời ngắt timer 10ms.
+- Mỗi 10ms thì chương trình sẽ kiểm tra và gửi SPI qua DMA tới thiết bị. Mỗi thiết bị sẽ được gửi xen kẽ bằng cách so sánh trực tiếpđịa chỉ của biếntruyeefnn vào.
+- Khi gửi và nhận DMA xong sẽ sinh ra ngắt, và ta so sánh địa chỉ truyền vào TX là của sensor 1 hay 2 để lấy kết quả cho từng Sensor.
