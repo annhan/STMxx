@@ -11,8 +11,9 @@
 
     - tạo variable  tên VSARm với value C:/VSARM
     - Add đường dẫn vào Path.
-![ hinh 1](/doc/cc1.png)
-![ hinh 1](/doc/cc2.png)
+    
+![ hinh 1](doc/cc1.png)
+![ hinh 1](doc/cc2.png)
 
 ***2. cài visualstdio***
 ----------
