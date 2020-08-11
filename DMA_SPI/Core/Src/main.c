@@ -24,7 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "user_spi.h"
-
+#include "linkfile.h"
 uint8_t Rx_data[2];
 uint8_t buffer[2];
 

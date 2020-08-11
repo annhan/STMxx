@@ -28,6 +28,7 @@ c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/ar
 Allocating common symbols
 Common symbol       size              file
 
+SPI_Sensor          0x4               build/main.o
 hdma_usart2_rx      0x44              build/main.o
 errno               0x4               c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m\libc_nano.a(lib_a-reent.o)
 Rx_data             0x2               build/main.o
@@ -36,7 +37,6 @@ pFlash              0x20              build/stm32f1xx_hal_flash.o
 hdma_usart1_tx      0x44              build/main.o
 hdma_usart1_rx      0x44              build/main.o
 huart1              0x40              build/main.o
-SPID                0x4               build/main.o
 buffer              0x2               build/main.o
 htim1               0x40              build/main.o
 hspi1               0x58              build/main.o
@@ -1491,12 +1491,12 @@ LOAD c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/g
                 0x20000098        0x4 c:/program files (x86)/gnu tools arm embedded/7 2018-q2-update/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m\libnosys.a(sbrk.o)
  *(COMMON)
  COMMON         0x2000009c      0x278 build/main.o
-                0x2000009c                hdma_usart2_rx
-                0x200000e0                Rx_data
-                0x200000e4                hdma_usart1_tx
-                0x20000128                hdma_usart1_rx
-                0x2000016c                huart1
-                0x200001ac                SPID
+                0x2000009c                SPI_Sensor
+                0x200000a0                hdma_usart2_rx
+                0x200000e4                Rx_data
+                0x200000e8                hdma_usart1_tx
+                0x2000012c                hdma_usart1_rx
+                0x20000170                huart1
                 0x200001b0                buffer
                 0x200001b4                htim1
                 0x200001f4                hspi1
@@ -1701,36 +1701,36 @@ OUTPUT(build/Demo.elf elf32-littlearm)
  .debug_line    0x00004e0c      0xc5f build/stm32f1xx_hal_spi.o
  .debug_line    0x00005a6b       0x72 build/startup_stm32f103xb.o
 
-.debug_str      0x00000000     0x3ee4
+.debug_str      0x00000000     0x3eea
  .debug_str     0x00000000      0xad0 build/user_spi.o
                                 0xbad (size before relaxing)
- .debug_str     0x00000ad0      0xac3 build/main.o
-                               0x11f5 (size before relaxing)
- .debug_str     0x00001593      0x18d build/stm32f1xx_it.o
+ .debug_str     0x00000ad0      0xac9 build/main.o
+                               0x11fb (size before relaxing)
+ .debug_str     0x00001599      0x18d build/stm32f1xx_it.o
                                 0x9ac (size before relaxing)
- .debug_str     0x00001720      0x103 build/stm32f1xx_hal_msp.o
+ .debug_str     0x00001726      0x103 build/stm32f1xx_hal_msp.o
                                 0xe57 (size before relaxing)
- .debug_str     0x00001823      0xd69 build/stm32f1xx_hal_tim.o
+ .debug_str     0x00001829      0xd69 build/stm32f1xx_hal_tim.o
                                0x14df (size before relaxing)
- .debug_str     0x0000258c      0x4d5 build/stm32f1xx_hal_tim_ex.o
+ .debug_str     0x00002592      0x4d5 build/stm32f1xx_hal_tim_ex.o
                                 0xcf7 (size before relaxing)
- .debug_str     0x00002a61      0x511 build/stm32f1xx_hal_uart.o
+ .debug_str     0x00002a67      0x511 build/stm32f1xx_hal_uart.o
                                 0xc27 (size before relaxing)
- .debug_str     0x00002f72      0x25c build/stm32f1xx_hal.o
+ .debug_str     0x00002f78      0x25c build/stm32f1xx_hal.o
                                 0x83b (size before relaxing)
- .debug_str     0x000031ce      0x1ad build/stm32f1xx_hal_rcc.o
+ .debug_str     0x000031d4      0x1ad build/stm32f1xx_hal_rcc.o
                                 0x690 (size before relaxing)
- .debug_str     0x0000337b      0x104 build/stm32f1xx_hal_gpio.o
+ .debug_str     0x00003381      0x104 build/stm32f1xx_hal_gpio.o
                                 0x4ae (size before relaxing)
- .debug_str     0x0000347f      0x1c7 build/stm32f1xx_hal_dma.o
+ .debug_str     0x00003485      0x1c7 build/stm32f1xx_hal_dma.o
                                 0x6ab (size before relaxing)
- .debug_str     0x00003646      0x391 build/stm32f1xx_hal_cortex.o
+ .debug_str     0x0000364c      0x391 build/stm32f1xx_hal_cortex.o
                                 0x95d (size before relaxing)
- .debug_str     0x000039d7       0x4f build/system_stm32f1xx.o
+ .debug_str     0x000039dd       0x4f build/system_stm32f1xx.o
                                 0x322 (size before relaxing)
- .debug_str     0x00003a26      0x49a build/stm32f1xx_hal_spi.o
+ .debug_str     0x00003a2c      0x49a build/stm32f1xx_hal_spi.o
                                 0xbd2 (size before relaxing)
- .debug_str     0x00003ec0       0x24 build/startup_stm32f103xb.o
+ .debug_str     0x00003ec6       0x24 build/startup_stm32f103xb.o
                                  0x43 (size before relaxing)
 
 .comment        0x00000000       0x7f
@@ -2201,7 +2201,7 @@ Reset_Handler                                     build/startup_stm32f103xb.o
 Rx_data                                           build/main.o
 SPI1_IRQHandler                                   build/stm32f1xx_it.o
 SPI2_IRQHandler                                   build/startup_stm32f103xb.o
-SPID                                              build/main.o
+SPI_Sensor                                        build/main.o
 SVC_Handler                                       build/stm32f1xx_it.o
 SysTick_Handler                                   build/stm32f1xx_it.o
 SystemClock_Config                                build/main.o
