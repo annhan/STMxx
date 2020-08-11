@@ -91,13 +91,15 @@ Nhần F1 và đánh vào ```>settings json``` chọn ```Open Setting json``
 ```
 
 Cần chỉnh cho phù hợp với từng dòng chíp:
+```
+    - HSE frequency
+    - Xóa USE_FULL_ASSERT
+    - Thay thế DEBUG  bằng NDEBUG 
+```
 
-- HSE frequency
-- Xóa USE_FULL_ASSERT
-- Thay thế DEBUG  bằng NDEBUG 
 
 
-- F1 -> config task ->Tasks: Configure tasks ->Create tasks.json file from template và chọn Other option
+F1 -> config task ->Tasks: Configure tasks ->Create tasks.json file from template và chọn Other option
 
 ```c
 {
