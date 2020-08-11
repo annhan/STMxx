@@ -1,4 +1,4 @@
-1. [Bootloader]() Viết bootloader trước khi bắt đầu mainApp.
+1. [Bootloader](/BootLoade) Viết bootloader trước khi bắt đầu mainApp.
 2. [DMA UART]()
 3. [DMA SPI]()
 4. [Timer]()
