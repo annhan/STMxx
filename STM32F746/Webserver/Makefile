@@ -282,7 +282,6 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/LwIP/src/include/compat/stdc \
 -IMiddlewares/Third_Party/LwIP/system/arch \
 -IDrivers/CMSIS/Include
--IDrivers/CMSIS/Include
 
 
 # compile gcc flags
