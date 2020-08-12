@@ -11,6 +11,12 @@
 
     - tạo variable  tên VSARm với value C:/VSARM
     - Add đường dẫn vào Path.
+    ***Recommended Extensions***
+    ```
+    Include Autocomplete
+    Path Autocomplete
+    Auto Comment Blocks
+    ```
     
 ![ hinh 1](doc/cc1.png)
 ![ hinh 1](doc/cc2.png)
