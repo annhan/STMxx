@@ -5,7 +5,7 @@
 
 - [ST-Link Tools](https://github.com/texane/stlink/releases) cài vào ```C:\VSARM\stlink\```
 
-- [MinGW-W64](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe) và cài tới ```C:\VSARM\mingw\``` 
+- [MinGW-W64](http://mingw-w64.org/doku.php/download) và cài tới ```C:\VSARM\mingw\``` 
 
 - Cài PATH trong windown
 
