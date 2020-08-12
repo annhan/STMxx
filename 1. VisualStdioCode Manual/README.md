@@ -1,3 +1,7 @@
+***C1 : [Cài Tool](https://marketplace.visualstudio.com/items?itemName=bmd.stm32-for-vscode)***
+---------------
+
+
 ***1. Cài enviroment***
 ------------
 
