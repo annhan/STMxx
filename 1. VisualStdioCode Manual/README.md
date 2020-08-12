@@ -5,12 +5,18 @@
 
 - [ST-Link Tools](https://github.com/texane/stlink/releases) cài vào ```C:\VSARM\stlink\```
 
-- [MinGW-W64](https://sourceforge.net/projects/mingw-w64/) và cài tới ```C:\VSARM\mingw\``` 
+- [MinGW-W64](http://mingw-w64.org/doku.php/download) và cài tới ```C:\VSARM\mingw\``` 
 
 - Cài PATH trong windown
 
     - tạo variable  tên VSARm với value C:/VSARM
     - Add đường dẫn vào Path.
+    ***Recommended Extensions***
+    ```
+    Include Autocomplete
+    Path Autocomplete
+    Auto Comment Blocks
+    ```
     
 ![ hinh 1](doc/cc1.png)
 ![ hinh 1](doc/cc2.png)
