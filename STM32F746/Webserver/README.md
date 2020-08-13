@@ -2,6 +2,7 @@
 --------
 
 - Dời Địa chỉ Flash khởi động chương trình lên 32K từ 0x0800000 lên 0x08008000
+Lý do chừa section để lưu dư liệu config tại flash.
 - Chừa 32K flash để lưu data
 
 ```
