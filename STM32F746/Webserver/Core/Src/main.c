@@ -121,7 +121,33 @@ void StartDefaultTask(void const * argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void get_config_from_flash(){
+    readSector(0x8000100,&net_parameter,sizeof(net_parameter));
+    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_parameter.firstRun[0],net_parameter.IP_ADDRESS[0], \
+                                          net_parameter.IP_ADDRESS[1],net_parameter.IP_ADDRESS[2], \
+                                          net_parameter.IP_ADDRESS[3]);
+  	if(net_parameter.firstRun[0]!=10)
+	{     
+        net_parameter.IP_ADDRESS[0] = 192;
+        net_parameter.IP_ADDRESS[1] = 168;
+        net_parameter.IP_ADDRESS[2] = 0;
+        net_parameter.IP_ADDRESS[3] = 9;
+        net_parameter.NETMASK_ADDRESS[0] = 255;
+        net_parameter.NETMASK_ADDRESS[1] = 255;
+        net_parameter.NETMASK_ADDRESS[2] = 255;
+        net_parameter.NETMASK_ADDRESS[3] = 0;
+        net_parameter.GATEWAY_ADDRESS[0] = 192;
+        net_parameter.GATEWAY_ADDRESS[1] = 168;
+        net_parameter.GATEWAY_ADDRESS[2] = 0;
+        net_parameter.GATEWAY_ADDRESS[3] = 1;
+        net_parameter.firstRun[0] = 10 ;
+     flash_write(0x8000100,&net_parameter,sizeof(Net_conf));
+	   HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, 0x08008000, 0);
+	   NVIC_SystemReset();
+	}
+  flash_write(0x08000100,&net_parameter,sizeof(Net_conf));
 
+}
 /* USER CODE END 0 */
 
 /**
@@ -176,9 +202,8 @@ int main(void)
   MX_USART6_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-   // readSector(0x8000000,&net_parameter,sizeof(net_parameter));
-    //my_printf("LAN %d \r\n",net_parameter.firstRun);
-    //writeSector(0x8000000,&net_parameter,sizeof(net_parameter));
+  
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -215,7 +240,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+      my_printf("MAIN\r\n");
+      osDelay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -1578,6 +1604,7 @@ void StartDefaultTask(void const * argument)
   /* init code for USB_HOST */
   MX_USB_HOST_Init();
   /* USER CODE BEGIN 5 */
+  get_config_from_flash();
   /* Infinite loop */
   for(;;)
   {

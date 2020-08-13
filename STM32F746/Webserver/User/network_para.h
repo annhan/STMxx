@@ -4,7 +4,7 @@
 #include "stdint.h"
 
 typedef struct{
-    uint16_t firstRun;
+    uint16_t firstRun[2];
     uint16_t IP_ADDRESS[4];
     uint16_t NETMASK_ADDRESS[4];
     uint16_t GATEWAY_ADDRESS[4];
