@@ -123,9 +123,19 @@ void StartDefaultTask(void const * argument);
 /* USER CODE BEGIN 0 */
 void get_config_from_flash(){
     readSector(0x8000100,&net_parameter,sizeof(net_parameter));
-    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_parameter.firstRun[0],net_parameter.IP_ADDRESS[0], \
-                                          net_parameter.IP_ADDRESS[1],net_parameter.IP_ADDRESS[2], \
+    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_parameter.firstRun[0], \
+                                          net_parameter.IP_ADDRESS[0], \
+                                          net_parameter.IP_ADDRESS[1], \
+                                          net_parameter.IP_ADDRESS[2], \
                                           net_parameter.IP_ADDRESS[3]);
+    my_printf("NETMASK_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.NETMASK_ADDRESS[0], \
+                                                  net_parameter.NETMASK_ADDRESS[1], \
+                                                  net_parameter.NETMASK_ADDRESS[2], \
+                                                  net_parameter.NETMASK_ADDRESS[3]);
+    my_printf("GATEWAY_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.GATEWAY_ADDRESS[0], \
+                                                  net_parameter.GATEWAY_ADDRESS[1], \
+                                                  net_parameter.GATEWAY_ADDRESS[2], \
+                                                  net_parameter.GATEWAY_ADDRESS[3]);
   	if(net_parameter.firstRun[0]!=10)
 	{     
         net_parameter.IP_ADDRESS[0] = 192;
@@ -141,11 +151,13 @@ void get_config_from_flash(){
         net_parameter.GATEWAY_ADDRESS[2] = 0;
         net_parameter.GATEWAY_ADDRESS[3] = 1;
         net_parameter.firstRun[0] = 10 ;
-     flash_write(0x8000100,&net_parameter,sizeof(Net_conf));
+      my_printf("size struct  %d\r\n",sizeof(net_parameter));
+     flash_write(0x8000100,&net_parameter,sizeof(net_parameter));
 	   HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, 0x08008000, 0);
 	   NVIC_SystemReset();
 	}
-  flash_write(0x08000100,&net_parameter,sizeof(Net_conf));
+  net_parameter.firstRun[0]++;
+  flash_write(0x08000100,&net_parameter,sizeof(net_parameter));
 
 }
 /* USER CODE END 0 */

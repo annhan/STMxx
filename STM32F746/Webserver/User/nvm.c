@@ -43,7 +43,7 @@ uint8_t flash_write(uint32_t address, void *data, uint16_t size)
     uint16_t *AddressPtr;
     valuePtr=(uint16_t *)data;
     AddressPtr = (uint16_t *)address;
-    size = size/2; // incoming value is expressed in bytes, not 16 bit words
+    size = size; // incoming value is expressed in bytes, not 16 bit words
     for (int i = 0; i < size/2; i++){
         HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, (address)+(i*2), valuePtr[i]) ;
     }
