@@ -10,6 +10,6 @@ typedef struct{
     uint16_t GATEWAY_ADDRESS[4];
 }Net_conf;
 
-extern Net_conf net_parameter;
+//extern Net_conf net_parameter;
 
 #endif

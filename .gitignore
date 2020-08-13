@@ -2,3 +2,4 @@
 *.o
 *.lst
 *.d
+STM32F746/Test/*

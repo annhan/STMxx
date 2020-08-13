@@ -68,7 +68,7 @@ void eraseSector(uint32_t SectorStartAddress)
     FLASH->KEYR = 0xCDEF89AB;
     FLASH->CR &= ~BIT0;  // Ensure PG bit is low
     FLASH->CR |= BIT1; // set the PER bit
-    FLASH->AR = SectorStartAddress;
+    FLASH->ACR = SectorStartAddress;
     FLASH->CR |= BIT6; // set the start bit 
     while(FLASH->SR & BIT0); // wait while busy
 }

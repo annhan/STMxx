@@ -26,12 +26,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "nvm.h"
+#include "printEx.h"
+#include "network_para.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+Net_conf net_parameter;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -84,7 +86,6 @@ SDRAM_HandleTypeDef hsdram1;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -175,7 +176,9 @@ int main(void)
   MX_USART6_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-
+   // readSector(0x8000000,&net_parameter,sizeof(net_parameter));
+    //my_printf("LAN %d \r\n",net_parameter.firstRun);
+    //writeSector(0x8000000,&net_parameter,sizeof(net_parameter));
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -1337,7 +1340,7 @@ static void MX_USART6_UART_Init(void)
   huart6.Init.Parity = UART_PARITY_NONE;
   huart6.Init.Mode = UART_MODE_TX_RX;
   huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_8;
   huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_UART_Init(&huart6) != HAL_OK)
@@ -1578,7 +1581,8 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    my_printf("SSSSSSSSSS\r\n");
+    osDelay(1000);
   }
   /* USER CODE END 5 */
 }
