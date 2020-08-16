@@ -17,7 +17,6 @@ char const *theSSItags[numSSItags] = { "ip", "sub","Gaway" };
 
 u16_t mySSIHandler(int iIndex, char *pcInsert, int iInsertLen) {
     my_printf("ssi Get %s\r\n",pcInsert);
-    //char myStr1[]=NULL;
     char myStr1[50];
    if (iIndex == 0) {
       sprintf(myStr1, "%d.%d.%d.%d", net_parameter.IP_ADDRESS[0], \
@@ -57,7 +56,20 @@ void mySSIinit(void) {
 tCGI theCGItable[1];
 
 const char* LedCGIhandler(int iIndex, int iNumParams, char *pcParam[],char *pcValue[]) {
+    if (iIndex==0){ //Check cgi parameter : example GET /config.cgi?ip=2&gab=4 
+        for (int i=0; i<iNumParams; i++){ 
+            if (strcmp(pcParam[i] , "ip")==0){
+                my_printf("new ip %s\r\n", pcValue[i]);
+            }
+            if (strcmp(pcParam[i] , "sub")==0){
+                my_printf("new sub %s\r\n", pcValue[i]);
+            }
+            if (strcmp(pcParam[i] , "gaway")==0){
+                my_printf("new ip %s\r\n", pcValue[i]);
+            }
+        }
     return "/2.shtml";
+    }
  } // END [= CGI #5 =]
 const tCGI LedCGI = { "/config.cgi", LedCGIhandler };
 void myCGIinit(void) {
@@ -66,45 +78,3 @@ void myCGIinit(void) {
 } 
 
 
-/*
-const char * LEDS_CGI_Handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
-  uint32_t i=0;
-  
-   We have only one SSI handler iIndex = 0 
-  if (iIndex==0)
-  {
-    // All leds off 
-    BSP_LED_Off(LED1);
-    BSP_LED_Off(LED2);
-    BSP_LED_Off(LED3);
-    BSP_LED_Off(LED4);
-    
-    // Check cgi parameter : example GET /leds.cgi?led=2&led=4 
-    for (i=0; i<iNumParams; i++)
-    {
-      // check parameter "led" 
-      if (strcmp(pcParam[i] , "led")==0)   
-      {
-        // switch led1 ON if 1 
-        if(strcmp(pcValue[i], "1") ==0) 
-          BSP_LED_On(LED1);
-          
-        // switch led2 ON if 2 
-        else if(strcmp(pcValue[i], "2") ==0) 
-          BSP_LED_On(LED2);
-        
-        // switch led3 ON if 3 
-        else if(strcmp(pcValue[i], "3") ==0) 
-          BSP_LED_On(LED3);
-        
-        // switch led4 ON if 4 
-        else if(strcmp(pcValue[i], "4") ==0) 
-          BSP_LED_On(LED4);
-      }
-    }
-  }
-  // uri to send after cgi call
-  return "/STM32F4xxLED.html";  
-}
-*/

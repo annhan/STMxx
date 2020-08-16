@@ -216,11 +216,11 @@ input[type=text]:focus {
 function SendNewIP()
 {
 var xhttp = new XMLHttpRequest();
-var payload = "Config.cgi?"
+var payload = "config.cgi?ip="
 var IP=document.getElementById("IP_text").value;
 var Mask=document.getElementById("Mask_text").value;
 var Gateway=document.getElementById("Gateway_text").value;
-payload=payload+IP+"/"+Mask+"/"+Gateway;
+payload=payload+IP+"&sub="+Mask+"&gaway="+Gateway;
 xhttp.open("GET",payload, true);
 xhttp.send();
 }
