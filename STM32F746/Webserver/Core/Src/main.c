@@ -20,15 +20,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "fatfs.h"
 #include "lwip.h"
-#include "usb_host.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "nvm.h"
-#include "printEx.h"
-#include "network_para.h"
+#include "httpserver-netconn.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,9 +78,17 @@ TIM_HandleTypeDef htim12;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart6;
 
+HCD_HandleTypeDef hhcd_USB_OTG_FS;
+
 SDRAM_HandleTypeDef hsdram1;
 
-osThreadId defaultTaskHandle;
+/* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 4096 * 4
+};
 /* USER CODE BEGIN PV */
 /* USER CODE END PV */
 
@@ -113,7 +117,8 @@ static void MX_TIM8_Init(void);
 static void MX_TIM12_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
-void StartDefaultTask(void const * argument);
+static void MX_USB_OTG_FS_HCD_Init(void);
+void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -121,45 +126,8 @@ void StartDefaultTask(void const * argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void get_config_from_flash(){
-    readSector(0x8000100,&net_parameter,sizeof(net_parameter));
-    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_parameter.firstRun[0], \
-                                          net_parameter.IP_ADDRESS[0], \
-                                          net_parameter.IP_ADDRESS[1], \
-                                          net_parameter.IP_ADDRESS[2], \
-                                          net_parameter.IP_ADDRESS[3]);
-    my_printf("NETMASK_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.NETMASK_ADDRESS[0], \
-                                                  net_parameter.NETMASK_ADDRESS[1], \
-                                                  net_parameter.NETMASK_ADDRESS[2], \
-                                                  net_parameter.NETMASK_ADDRESS[3]);
-    my_printf("GATEWAY_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.GATEWAY_ADDRESS[0], \
-                                                  net_parameter.GATEWAY_ADDRESS[1], \
-                                                  net_parameter.GATEWAY_ADDRESS[2], \
-                                                  net_parameter.GATEWAY_ADDRESS[3]);
-  	if(net_parameter.firstRun[0]!=10)
-	{     
-        net_parameter.IP_ADDRESS[0] = 192;
-        net_parameter.IP_ADDRESS[1] = 168;
-        net_parameter.IP_ADDRESS[2] = 0;
-        net_parameter.IP_ADDRESS[3] = 9;
-        net_parameter.NETMASK_ADDRESS[0] = 255;
-        net_parameter.NETMASK_ADDRESS[1] = 255;
-        net_parameter.NETMASK_ADDRESS[2] = 255;
-        net_parameter.NETMASK_ADDRESS[3] = 0;
-        net_parameter.GATEWAY_ADDRESS[0] = 192;
-        net_parameter.GATEWAY_ADDRESS[1] = 168;
-        net_parameter.GATEWAY_ADDRESS[2] = 0;
-        net_parameter.GATEWAY_ADDRESS[3] = 1;
-        net_parameter.firstRun[0] = 10 ;
-      my_printf("size struct  %d\r\n",sizeof(net_parameter));
-     flash_write(0x8000100,&net_parameter,sizeof(net_parameter));
-	   HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, 0x08008000, 0);
-	   NVIC_SystemReset();
-	}
-  net_parameter.firstRun[0]++;
-  flash_write(0x08000100,&net_parameter,sizeof(net_parameter));
 
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -169,7 +137,7 @@ void get_config_from_flash(){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+ 
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -212,11 +180,13 @@ int main(void)
   MX_TIM12_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
-  MX_FATFS_Init();
+  MX_USB_OTG_FS_HCD_Init();
   /* USER CODE BEGIN 2 */
-  
-
+   my_printf("init done  \r\n");
   /* USER CODE END 2 */
+
+  /* Init scheduler */
+  osKernelInitialize();
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -235,9 +205,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 4096);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -249,11 +218,11 @@ int main(void)
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  my_printf("init finish  \r\n");
   while (1)
   {
     /* USER CODE END WHILE */
-      my_printf("MAIN\r\n");
-      osDelay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -275,7 +244,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -285,7 +254,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 400;
+  RCC_OscInitStruct.PLL.PLLN = 100;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -304,10 +273,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -320,13 +289,13 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.PLLI2S.PLLI2SP = RCC_PLLP_DIV2;
   PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
   PeriphClkInitStruct.PLLI2S.PLLI2SQ = 2;
-  PeriphClkInitStruct.PLLSAI.PLLSAIN = 384;
-  PeriphClkInitStruct.PLLSAI.PLLSAIR = 5;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
+  PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
   PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
-  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV8;
+  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV4;
   PeriphClkInitStruct.PLLI2SDivQ = 1;
   PeriphClkInitStruct.PLLSAIDivQ = 1;
-  PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_8;
+  PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
   PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   PeriphClkInitStruct.Sai2ClockSelection = RCC_SAI2CLKSOURCE_PLLSAI;
   PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
@@ -361,7 +330,7 @@ static void MX_ADC3_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc3.Init.Resolution = ADC_RESOLUTION_12B;
   hadc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc3.Init.ContinuousConvMode = DISABLE;
@@ -893,6 +862,14 @@ static void MX_SDMMC1_SD_Init(void)
   hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
   hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
   hsd1.Init.ClockDiv = 0;
+  if (HAL_SD_Init(&hsd1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN SDMMC1_Init 2 */
 
   /* USER CODE END SDMMC1_Init 2 */
@@ -1378,7 +1355,7 @@ static void MX_USART6_UART_Init(void)
   huart6.Init.Parity = UART_PARITY_NONE;
   huart6.Init.Mode = UART_MODE_TX_RX;
   huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart6.Init.OverSampling = UART_OVERSAMPLING_8;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
   huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_UART_Init(&huart6) != HAL_OK)
@@ -1388,6 +1365,37 @@ static void MX_USART6_UART_Init(void)
   /* USER CODE BEGIN USART6_Init 2 */
 
   /* USER CODE END USART6_Init 2 */
+
+}
+
+/**
+  * @brief USB_OTG_FS Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USB_OTG_FS_HCD_Init(void)
+{
+
+  /* USER CODE BEGIN USB_OTG_FS_Init 0 */
+
+  /* USER CODE END USB_OTG_FS_Init 0 */
+
+  /* USER CODE BEGIN USB_OTG_FS_Init 1 */
+
+  /* USER CODE END USB_OTG_FS_Init 1 */
+  hhcd_USB_OTG_FS.Instance = USB_OTG_FS;
+  hhcd_USB_OTG_FS.Init.Host_channels = 8;
+  hhcd_USB_OTG_FS.Init.speed = HCD_SPEED_FULL;
+  hhcd_USB_OTG_FS.Init.dma_enable = DISABLE;
+  hhcd_USB_OTG_FS.Init.phy_itface = HCD_PHY_EMBEDDED;
+  hhcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
+  if (HAL_HCD_Init(&hhcd_USB_OTG_FS) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USB_OTG_FS_Init 2 */
+
+  /* USER CODE END USB_OTG_FS_Init 2 */
 
 }
 
@@ -1608,21 +1616,41 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
+void StartDefaultTask(void *argument)
 {
   /* init code for LWIP */
   MX_LWIP_Init();
-
-  /* init code for USB_HOST */
-  MX_USB_HOST_Init();
   /* USER CODE BEGIN 5 */
-  get_config_from_flash();
+  http_server_netconn_init();
+  uint32_t dem = 0;
   /* Infinite loop */
+  my_printf("Begin Loop defau \r\n");
   for(;;)
   {
-    my_printf("SSSSSSSSSS\r\n");
-    osDelay(1000);
+    osThreadTerminate(NULL);
+    dem ++;
+    if (dem >100){
+      my_printf("DefaultTask\r\n");
+      dem =0;
+    }
+    
+    osDelay(50);
   }
+  /*
+ 
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.BaseAddress = 0x2004C000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.SubRegionDisable = 0x00;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+  */
   /* USER CODE END 5 */
 }
 

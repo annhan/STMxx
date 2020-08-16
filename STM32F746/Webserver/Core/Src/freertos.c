@@ -53,9 +53,6 @@
 
 /* USER CODE END FunctionPrototypes */
 
-/* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
-
 /* Hook prototypes */
 void vApplicationIdleHook(void);
 void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
@@ -77,16 +74,17 @@ __weak void vApplicationIdleHook( void )
 /* USER CODE END 2 */
 
 /* USER CODE BEGIN 4 */
-__weak void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
 {
    /* Run time stack overflow checking is performed if
    configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
    called if a stack overflow is detected. */
+   my_printf("Over stack %s\r\n",pcTaskName);
 }
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN 5 */
-__weak void vApplicationMallocFailedHook(void)
+ void vApplicationMallocFailedHook(void)
 {
    /* vApplicationMallocFailedHook() will only be called if
    configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h. It is a hook
@@ -98,21 +96,9 @@ __weak void vApplicationMallocFailedHook(void)
    FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
    to query the size of free heap space that remains (although it does not
    provide information on how the remaining heap might be fragmented). */
+   my_printf("vApplicationMallocFailedHook\r\n");
 }
 /* USER CODE END 5 */
-
-/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
-static StaticTask_t xIdleTaskTCBBuffer;
-static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
-
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
-{
-  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
-  *ppxIdleTaskStackBuffer = &xIdleStack[0];
-  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-  /* place for user code */
-}
-/* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */

@@ -32,7 +32,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "nvm.h"
+#include "printEx.h"
+#include "network_para.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
