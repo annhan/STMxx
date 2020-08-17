@@ -58,49 +58,49 @@ osThreadAttr_t attributes;
 
 /* USER CODE BEGIN 2 */
 void get_config_from_flash(){
-    readSector(0x8000100,&net_parameter,sizeof(net_parameter));
-    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_parameter.firstRun[0], \
-                                          net_parameter.IP_ADDRESS[0], \
-                                          net_parameter.IP_ADDRESS[1], \
-                                          net_parameter.IP_ADDRESS[2], \
-                                          net_parameter.IP_ADDRESS[3]);
-    my_printf("NETMASK_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.NETMASK_ADDRESS[0], \
-                                                  net_parameter.NETMASK_ADDRESS[1], \
-                                                  net_parameter.NETMASK_ADDRESS[2], \
-                                                  net_parameter.NETMASK_ADDRESS[3]);
-    my_printf("GATEWAY_ADDRESS- %d.%d.%d.%d \r\n",net_parameter.GATEWAY_ADDRESS[0], \
-                                                  net_parameter.GATEWAY_ADDRESS[1], \
-                                                  net_parameter.GATEWAY_ADDRESS[2], \
-                                                  net_parameter.GATEWAY_ADDRESS[3]);
-  	if(net_parameter.firstRun[0]!=10)
+    readSector(0x8000100,&net_para,sizeof(net_para));
+    my_printf("LAN %d - %d.%d.%d.%d \r\n",net_para.firstRun[0], \
+                                          net_para.IP_ADDRESS[0], \
+                                          net_para.IP_ADDRESS[1], \
+                                          net_para.IP_ADDRESS[2], \
+                                          net_para.IP_ADDRESS[3]);
+    my_printf("NETMASK_ADDRESS- %d.%d.%d.%d \r\n",net_para.NETMASK_ADDRESS[0], \
+                                                  net_para.NETMASK_ADDRESS[1], \
+                                                  net_para.NETMASK_ADDRESS[2], \
+                                                  net_para.NETMASK_ADDRESS[3]);
+    my_printf("GATEWAY_ADDRESS- %d.%d.%d.%d \r\n",net_para.GATEWAY_ADDRESS[0], \
+                                                  net_para.GATEWAY_ADDRESS[1], \
+                                                  net_para.GATEWAY_ADDRESS[2], \
+                                                  net_para.GATEWAY_ADDRESS[3]);
+  	if(net_para.firstRun[0]!=10)
 	{     
-        net_parameter.IP_ADDRESS[0] = 192;
-        net_parameter.IP_ADDRESS[1] = 168;
-        net_parameter.IP_ADDRESS[2] = 11;
-        net_parameter.IP_ADDRESS[3] = 10;
-        net_parameter.NETMASK_ADDRESS[0] = 255;
-        net_parameter.NETMASK_ADDRESS[1] = 255;
-        net_parameter.NETMASK_ADDRESS[2] = 255;
-        net_parameter.NETMASK_ADDRESS[3] = 0;
-        net_parameter.GATEWAY_ADDRESS[0] = 192;
-        net_parameter.GATEWAY_ADDRESS[1] = 168;
-        net_parameter.GATEWAY_ADDRESS[2] = 11;
-        net_parameter.GATEWAY_ADDRESS[3] = 1;
-        net_parameter.firstRun[0] = 10 ;
-      my_printf("size struct  %d\r\n",sizeof(net_parameter));
-     flash_write(0x8000100,&net_parameter,sizeof(net_parameter));
+        net_para.IP_ADDRESS[0] = 192;
+        net_para.IP_ADDRESS[1] = 168;
+        net_para.IP_ADDRESS[2] = 11;
+        net_panet_pararameter.IP_ADDRESS[3] = 10;
+        net_para.NETMASK_ADDRESS[0] = 255;
+        net_para.NETMASK_ADDRESS[1] = 255;
+        net_para.NETMASK_ADDRESS[2] = 255;
+        net_para.NETMASK_ADDRESS[3] = 0;
+        net_para.GATEWAY_ADDRESS[0] = 192;
+        net_para.GATEWAY_ADDRESS[1] = 168;
+        net_para.GATEWAY_ADDRESS[2] = 11;
+        net_para.GATEWAY_ADDRESS[3] = 1;
+        net_para.firstRun[0] = 10 ;
+      my_printf("size struct  %d\r\n",sizeof(net_para));
+     flash_write(0x8000100,&net_para,sizeof(net_para));
 	   HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, 0x08008000, 0);
 	   NVIC_SystemReset();
 	}
-  //net_parameter.firstRun[0]++;
-  //flash_write(0x08000100,&net_parameter,sizeof(net_parameter));
+  //net_para.firstRun[0]++;
+  //flash_write(0x08000100,&net_para,sizeof(net_para));
 
 }
 /*
   get_config_from_flash();
-  IP4_ADDR(&ipaddr, net_parameter.IP_ADDRESS[0], net_parameter.IP_ADDRESS[1], net_parameter.IP_ADDRESS[2], net_parameter.IP_ADDRESS[3]);
-  IP4_ADDR(&netmask, net_parameter.NETMASK_ADDRESS[0], net_parameter.NETMASK_ADDRESS[1] , net_parameter.NETMASK_ADDRESS[2], net_parameter.NETMASK_ADDRESS[3]);
-  IP4_ADDR(&gw, net_parameter.GATEWAY_ADDRESS[0], net_parameter.GATEWAY_ADDRESS[1], net_parameter.GATEWAY_ADDRESS[2], net_parameter.GATEWAY_ADDRESS[3]);
+  IP4_ADDR(&ipaddr, net_para.IP_ADDRESS[0], net_para.IP_ADDRESS[1], net_para.IP_ADDRESS[2], net_para.IP_ADDRESS[3]);
+  IP4_ADDR(&netmask, net_para.NETMASK_ADDRESS[0], net_para.NETMASK_ADDRESS[1] , net_para.NETMASK_ADDRESS[2], net_para.NETMASK_ADDRESS[3]);
+  IP4_ADDR(&gw, net_para.GATEWAY_ADDRESS[0], net_para.GATEWAY_ADDRESS[1], net_para.GATEWAY_ADDRESS[2], net_para.GATEWAY_ADDRESS[3]);
 */
 /* USER CODE END 2 */
 
@@ -167,9 +167,9 @@ void MX_LWIP_Init(void)
 
 /* USER CODE BEGIN 3 */
   get_config_from_flash();
-  IP4_ADDR(&ipaddr, net_parameter.IP_ADDRESS[0], net_parameter.IP_ADDRESS[1], net_parameter.IP_ADDRESS[2], net_parameter.IP_ADDRESS[3]);
-  IP4_ADDR(&netmask, net_parameter.NETMASK_ADDRESS[0], net_parameter.NETMASK_ADDRESS[1] , net_parameter.NETMASK_ADDRESS[2], net_parameter.NETMASK_ADDRESS[3]);
-  IP4_ADDR(&gw, net_parameter.GATEWAY_ADDRESS[0], net_parameter.GATEWAY_ADDRESS[1], net_parameter.GATEWAY_ADDRESS[2], net_parameter.GATEWAY_ADDRESS[3]);
+  IP4_ADDR(&ipaddr, net_para.IP_ADDRESS[0], net_para.IP_ADDRESS[1], net_para.IP_ADDRESS[2], net_para.IP_ADDRESS[3]);
+  IP4_ADDR(&netmask, net_para.NETMASK_ADDRESS[0], net_para.NETMASK_ADDRESS[1] , net_para.NETMASK_ADDRESS[2], net_para.NETMASK_ADDRESS[3]);
+  IP4_ADDR(&gw, net_para.GATEWAY_ADDRESS[0], net_para.GATEWAY_ADDRESS[1], net_para.GATEWAY_ADDRESS[2], net_para.GATEWAY_ADDRESS[3]);
   netif_set_addr(&gnetif, &ipaddr, &netmask, &gw);
 /* USER CODE END 3 */
 }

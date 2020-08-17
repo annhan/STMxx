@@ -21,5 +21,5 @@ Thay đổi ```#define VECT_TAB_OFFSET  0x00``` trong file system_stm32f7xx.c th
 Error CUbemx
 ------------
 
-thay đổi     ```HAL_NVIC_SetPriority(ETH_IRQn, 0, 0)```; thành     ```HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);``` thì ping mới hoạt động.
+thay đổi     ```HAL_NVIC_SetPriority(ETH_IRQn, 0, 0)```; thành     ```HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);``` thì FreeRTOS mới hoạt động.
 

@@ -19,26 +19,26 @@ u16_t mySSIHandler(int iIndex, char *pcInsert, int iInsertLen) {
     my_printf("ssi Get %s\r\n",pcInsert);
     char myStr1[50];
    if (iIndex == 0) {
-      sprintf(myStr1, "%d.%d.%d.%d", net_parameter.IP_ADDRESS[0], \
-                                    net_parameter.IP_ADDRESS[1],  \
-                                    net_parameter.IP_ADDRESS[2], \
-                                    net_parameter.IP_ADDRESS[3]);
+      sprintf(myStr1, "%d.%d.%d.%d", net_para.IP_ADDRESS[0], \
+                                    net_para.IP_ADDRESS[1],  \
+                                    net_para.IP_ADDRESS[2], \
+                                    net_para.IP_ADDRESS[3]);
       strcpy(pcInsert, myStr1);
       return strlen(myStr1);
     }
     else if (iIndex == 1){
-      sprintf(myStr1, "%d.%d.%d.%d", net_parameter.NETMASK_ADDRESS[0], \
-                                    net_parameter.NETMASK_ADDRESS[1],  \
-                                    net_parameter.NETMASK_ADDRESS[2], \
-                                    net_parameter.NETMASK_ADDRESS[3]);
+      sprintf(myStr1, "%d.%d.%d.%d", net_para.NETMASK_ADDRESS[0], \
+                                    net_para.NETMASK_ADDRESS[1],  \
+                                    net_para.NETMASK_ADDRESS[2], \
+                                    net_para.NETMASK_ADDRESS[3]);
       strcpy(pcInsert, myStr1);
       return strlen(myStr1);
     }
     else if (iIndex == 2){
-      sprintf(myStr1, "%d.%d.%d.%d", net_parameter.GATEWAY_ADDRESS[0], \
-                                    net_parameter.GATEWAY_ADDRESS[1],  \
-                                    net_parameter.GATEWAY_ADDRESS[2], \
-                                    net_parameter.GATEWAY_ADDRESS[3]);
+      sprintf(myStr1, "%d.%d.%d.%d", net_para.GATEWAY_ADDRESS[0], \
+                                    net_para.GATEWAY_ADDRESS[1],  \
+                                    net_para.GATEWAY_ADDRESS[2], \
+                                    net_para.GATEWAY_ADDRESS[3]);
       strcpy(pcInsert, myStr1);
       return strlen(myStr1);
     }

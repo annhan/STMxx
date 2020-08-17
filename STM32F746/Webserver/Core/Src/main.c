@@ -29,7 +29,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-Net_conf net_parameter;
+Net_conf net_para;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
