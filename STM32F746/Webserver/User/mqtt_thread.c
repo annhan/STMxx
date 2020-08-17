@@ -67,7 +67,7 @@ static void mqtt_connect(mqtt_client_t *client)
    * ip4_addr_get_network
    */
   /* taproom.lan = 192.168.1.107 = 0x C0.A8.01.6B */
-  mqtt_server_ip_addr.addr = IPADDR4_INIT_BYTES();
+  mqtt_server_ip_addr.addr = IPADDR4_IT_BYTES();
   /* jolt.lan = 192.168.1.30 = 0x CO.A8.01.1E */
 //  mqtt_server_ip_addr.addr = (u32_t) 0x1E01A8C0UL;
 
