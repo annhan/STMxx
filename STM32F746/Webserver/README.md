@@ -17,9 +17,9 @@ FLASH (rx)      : ORIGIN = 0x8008000, LENGTH = 992K  //1024-32 còn 992K
 Thay đổi ```#define VECT_TAB_OFFSET  0x00``` trong file system_stm32f7xx.c thành ```#define VECT_TAB_OFFSET  0x8000 ```
 
 ***Để thay đổi địa chỉ khởi động mà không viết bootloader ta có thể dùng  STM32 ST-Link Utility. 2. Menu -> Target -> Option Bytes***
+![ChangeStartAddress](docs/changethestartaddress.png)
 
 Error CUbemx
 ------------
-
-thay đổi     ```HAL_NVIC_SetPriority(ETH_IRQn, 0, 0)```; thành     ```HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);``` thì FreeRTOS mới hoạt động.
+-![SetIRQETH](docs/SettingInterrupt.PNG)
 
