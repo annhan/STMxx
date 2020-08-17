@@ -8,6 +8,8 @@
  #include "lwip.h"
  #include "printEx.h"
  #include "network_para.h"
+
+ extern ip_addr_t ipHost;
  // [* SSI #2 *]
 #define numSSItags 3
 
@@ -19,10 +21,15 @@ u16_t mySSIHandler(int iIndex, char *pcInsert, int iInsertLen) {
     my_printf("ssi Get %s\r\n",pcInsert);
     char myStr1[50];
    if (iIndex == 0) {
-      sprintf(myStr1, "%d.%d.%d.%d", net_para.IP_ADDRESS[0], \
+     /* sprintf(myStr1, "%d.%d.%d.%d", net_para.IP_ADDRESS[0], \
                                     net_para.IP_ADDRESS[1],  \
                                     net_para.IP_ADDRESS[2], \
-                                    net_para.IP_ADDRESS[3]);
+                                    net_para.IP_ADDRESS[3]);*/
+      sprintf(myStr1, "%i.%i.%i.%i",  (uint8_t)(((ipHost.addr) & (u32_t)0x000000ffUL)) ,\
+                                      (uint8_t)(((ipHost.addr) & (u32_t)0x0000ff00UL) >>8) , \
+                                      (uint8_t)(((ipHost.addr) & (u32_t)0x00ff0000UL) >> 16) , \
+                                      (uint8_t)(((ipHost.addr) & (u32_t)0xff000000UL) >> 24));
+
       strcpy(pcInsert, myStr1);
       return strlen(myStr1);
     }
@@ -70,7 +77,8 @@ const char* LedCGIhandler(int iIndex, int iNumParams, char *pcParam[],char *pcVa
         }
     return "/2.shtml";
     }
- } // END [= CGI #5 =]
+    return "/2.shtml";
+} // END [= CGI #5 =]
 const tCGI LedCGI = { "/config.cgi", LedCGIhandler };
 void myCGIinit(void) {
     theCGItable[0] = LedCGI;

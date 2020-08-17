@@ -72,12 +72,12 @@ void get_config_from_flash(){
                                                   net_para.GATEWAY_ADDRESS[1], \
                                                   net_para.GATEWAY_ADDRESS[2], \
                                                   net_para.GATEWAY_ADDRESS[3]);
-  	if(net_para.firstRun[0]!=10)
+  	if(net_para.firstRun[0]!=11)
 	{     
         net_para.IP_ADDRESS[0] = 192;
         net_para.IP_ADDRESS[1] = 168;
         net_para.IP_ADDRESS[2] = 11;
-        net_panet_pararameter.IP_ADDRESS[3] = 10;
+        net_para.IP_ADDRESS[3] = 10;
         net_para.NETMASK_ADDRESS[0] = 255;
         net_para.NETMASK_ADDRESS[1] = 255;
         net_para.NETMASK_ADDRESS[2] = 255;
@@ -86,7 +86,7 @@ void get_config_from_flash(){
         net_para.GATEWAY_ADDRESS[1] = 168;
         net_para.GATEWAY_ADDRESS[2] = 11;
         net_para.GATEWAY_ADDRESS[3] = 1;
-        net_para.firstRun[0] = 10 ;
+        net_para.firstRun[0] = 11 ;
       my_printf("size struct  %d\r\n",sizeof(net_para));
      flash_write(0x8000100,&net_para,sizeof(net_para));
 	   HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, 0x08008000, 0);
