@@ -166,7 +166,17 @@ input[type=text] {
   outline: none;
  
 }
-
+input[type=password] {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 3px solid #ccc;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+ 
+}
 input[type=text]:focus {
   border: 3px solid #555;
   
@@ -178,6 +188,9 @@ input[type=text]:focus {
 <p id="status">Checking status...<p\>
 </div>
 <div style="background-color:#1f618d;padding:50px;text-align:center;">
+<h1 class="connexion">Parameter Config</h1>
+</div>
+
 <div class="menu">        
 	<div class="bloc_button">   
 		<p1>Change IP address</p1>  
@@ -200,18 +213,75 @@ input[type=text]:focus {
 	<div width="50%" >
 		<input  width="100%" type="text" id="Gateway_text" name="IP_text" placeholder="<!--#Gaway-->" >
 	</div> 
-	<input type="button" class="buttonSend" value="update" onclick="ValidateIPaddress()" >
-		 
+	<input type="button" class="buttonSend" value="update" onclick="ValidateIPaddress()" >	 
 </div> 
     
     
-
+<div class="menu">        
+	<div class="bloc_button">   
+		<p1>Change MQTT Config</p1>  
+	</div> 
+	<div width="50%" >
+		<p1 style="color:black">Server MQTT:</p1>
+	</div>
+	<div width="50%" >
+		<input  width="100%" type="text" id="SERVER_MQTT_text" name="SERVER_MQTT_text"  value= "<!--#sMQ-->" >
+	</div>
+	<div width="50%" >
+		<p1 style="color:black">Port MQTT:</p1>
+	</div>
+	<div width="50%" >
+		<input  width="100%" type="text" id="Port_MQTT_Text" name="Port_MQTT_Text"  placeholder="<!--#pMQ-->"  >
+	</div>
+	<div width="50%" >
+		<p1 style="color:black">Username:</p1>
+	</div>
+	<div width="50%" >
+		<input  width="100%" type="text" id="user_MQTT_text" name="user_MQTT_text" placeholder="<!--#uMQ-->" >
+	</div> 
+	<div width="50%" >
+		<p1 style="color:black">Password:</p1>
+	</div>
+	<div width="50%" >
+		<input  width="100%" type="password" id="Pas_MQTT_Text" name="Pas_MQTT_Text" placeholder="<!--#pMQ-->" >
+	</div> 
+	<input type="button" class="buttonSend" value="update GET" onclick="sendNewMQTT()" >	 
+  <input type="button" class="buttonSend" value="update POST" onclick="sendNewMqttPost()" >	 
+</div> 
 
    
 
 
   
 <script>
+
+function sendNewMqttPost()
+{
+var xhttp = new XMLHttpRequest();
+var payload = "s="
+var server=document.getElementById("SERVER_MQTT_text").value;
+var port=document.getElementById("Port_MQTT_Text").value;
+var user=document.getElementById("user_MQTT_text").value;
+var pass=document.getElementById("Pas_MQTT_Text").value;
+payload=payload+server+"&p="+port+"&u="+user+"&pa="+pass;
+xhttp.open("POST","/configmqtt.cgi", true);
+xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.send(payload);
+}
+
+
+function sendNewMQTT()
+{
+var xhttp = new XMLHttpRequest();
+var payload = "configmqtt.cgi?s="
+var server=document.getElementById("SERVER_MQTT_text").value;
+var port=document.getElementById("Port_MQTT_Text").value;
+var user=document.getElementById("user_MQTT_text").value;
+var pass=document.getElementById("Pas_MQTT_Text").value;
+payload=payload+server+"&p="+port+"&u="+user+"&pa="+pass;
+xhttp.open("GET",payload, true);
+xhttp.send();
+}
 
 function SendNewIP()
 {
