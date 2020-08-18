@@ -99,6 +99,8 @@
 #define LWIP_HTTPD_CGI 1
 /*----- Default Value for LWIP_HTTPD_SSI: 0 ---*/
 #define LWIP_HTTPD_SSI 1
+/*----- Default Value for LWIP_HTTPD_SUPPORT_POST: 0 ---*/
+#define LWIP_HTTPD_SUPPORT_POST 1
 /*----- Default Value for LWIP_HTTPD_MAX_TAG_NAME_LEN: 8 ---*/
 #define LWIP_HTTPD_MAX_TAG_NAME_LEN 16
 /*----- Default Value for LWIP_HTTPD_SSI_INCLUDE_TAG: 1 ---*/

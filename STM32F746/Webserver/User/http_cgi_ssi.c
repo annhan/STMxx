@@ -50,7 +50,6 @@ u16_t mySSIHandler(int iIndex, char *pcInsert, int iInsertLen) {
       return strlen(myStr1);
     }
     else if (iIndex == 3){  //sMQ
-      //sprintf(myStr1, "%s", net_para.serverMQTT);
       strcpy(pcInsert, &net_para.serverMQTT);
       return strlen(net_para.serverMQTT);
     }
@@ -60,7 +59,6 @@ u16_t mySSIHandler(int iIndex, char *pcInsert, int iInsertLen) {
       return strlen(myStr1);
     }
     else if (iIndex == 5){ //uMQ
-     // sprintf(myStr1, "%s", net_para.mqttUser);
       strcpy(pcInsert, &net_para.mqttUser);
       return strlen(net_para.mqttUser);
     }
@@ -80,7 +78,7 @@ void mySSIinit(void) {
 // in our SHTML file <form method="get" action="/leds.cgi"> [= CGI #3 =]
 
                     
-tCGI theCGItable[2];
+tCGI theCGItable[3];
 void IP_PARSER(char* buf,uint16_t* Value)
 {
 	char* saveptr=NULL;
@@ -139,12 +137,21 @@ const char* MqttCGIhandler(int iIndex, int iNumParams, char *pcParam[],char *pcV
 
     return "/index.shtml";
 } 
+const char* MqttPostCGIhandler(int iIndex, int iNumParams, char *pcParam[],char *pcValue[]) {
+
+    my_printf("POST Get %d\r\n",iNumParams);
+    
+
+    return "/index.shtml";
+} 
 const tCGI networkCGI = { "/config.cgi", NetCGIhandler };
 const tCGI mqttCGI = { "/configmqtt.cgi", MqttCGIhandler };
+const tCGI mqttpostCGI = { "/configmqttpost.cgi", MqttPostCGIhandler };
 void myCGIinit(void) {
     theCGItable[0] = networkCGI;
     theCGItable[1] = mqttCGI;
-    http_set_cgi_handlers(theCGItable, 2);
+    theCGItable[2] = mqttpostCGI;
+    http_set_cgi_handlers(theCGItable, 3);
 } 
 
 

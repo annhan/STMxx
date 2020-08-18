@@ -264,9 +264,9 @@ var port=document.getElementById("Port_MQTT_Text").value;
 var user=document.getElementById("user_MQTT_text").value;
 var pass=document.getElementById("Pas_MQTT_Text").value;
 payload=payload+server+"&p="+port+"&u="+user+"&pa="+pass;
-xhttp.open("POST","/configmqtt.cgi", true);
+xhttp.open("POST","/configmqttpost.cgi", true);
 xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.send(payload);
+xhttp.send(payload);
 }
 
 
