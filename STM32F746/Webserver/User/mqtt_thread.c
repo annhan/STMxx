@@ -9,12 +9,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "cmsis_os.h"
 #include "string.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "lwip/api.h"
 #include "lwip/ip4_addr.h"
 #include "lwip/apps/mqtt.h"
+#include "lwip/apps/mqtt_priv.h"
 #include "lwip/apps/mqtt_opts.h"
-#include "uart.h"
 #include "lwip/dns.h"
+
 #include "mqtt_thread.h"
 #include "network_para.h"
 /* Private typedef -----------------------------------------------------------*/
@@ -25,23 +28,23 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 static u32_t nPubCounter = 0;
-static mqtt_client_t mqtt_client;
+mqtt_client_t test_mqtt_client;
 static char pub_payload[40];
-
-/* Taproom.lan = 192.168.1.107 = 0xC0A80168UL */
-static ip_addr_t mqtt_server_ip_addr; // = IPADDR4_INIT_BYTES(192,168,1,107);
+ip_addr_t ipHost;
+static ip_addr_t primaryDnsServer = IPADDR4_INIT_BYTES(8,8,8,8);;
+char Host[]="api.thingspeak.com";
 
 /* Private function prototypes -----------------------------------------------*/
 //static void example_connect(mqtt_client_t *client);
+void dns_get_ip_from_host_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg);
 static void mqtt_connect(mqtt_client_t *client);
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status);
 static void mqtt_sub_request_cb(void *arg, err_t result);
 static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len);
 static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags);
-static void example_publish(mqtt_client_t *client, void *arg);
+static void data_mqtt_publish(mqtt_client_t *client, void *arg);
 static void mqtt_pub_request_cb(void *arg, err_t result);
-static void example_publish(mqtt_client_t *client, void *arg);
-static void example_disconnect(mqtt_client_t *client);
+static void data_mqtt_disconnect(mqtt_client_t *client);
 static void mqtt_client_thread(void *arg);
 
 
@@ -54,34 +57,10 @@ static void mqtt_connect(mqtt_client_t *client)
 {
   struct mqtt_connect_client_info_t ci;
   err_t err;
-
   /* Setup an empty client info structure */
   memset(&ci, 0, sizeof(ci));
-
-  /* Minimal amount of information required is client identifier, so set it here */
-  ci.client_id = "lwip_mqtt_test";
-
-
-  /*
-   * Note: Byte order of IP address is reversed
-   * ip4_addr_get_network
-   */
-  /* taproom.lan = 192.168.1.107 = 0x C0.A8.01.6B */
-  mqtt_server_ip_addr.addr = IPADDR4_IT_BYTES();
-  /* jolt.lan = 192.168.1.30 = 0x CO.A8.01.1E */
-//  mqtt_server_ip_addr.addr = (u32_t) 0x1E01A8C0UL;
-
-
-  /* Initiate client and connect to server, if this fails immediately an error code is returned
-     otherwise mqtt_connection_cb will be called with connection result after attempting
-     to establish a connection with the server.
-     For now MQTT version 3.1.1 is always used */
-
-  uart_send(&"MQTT_CONNECTING");
-
-  err = mqtt_client_connect(client, &mqtt_server_ip_addr, MQTT_PORT, mqtt_connection_cb, NULL, &ci);
-
-  /* For now just print the result code if something goes wrong */
+  ci.client_id = "lwipMqtt";
+  err = mqtt_client_connect(client, &ipHost, MQTT_PORT, mqtt_connection_cb, NULL, &ci);
   if(err != ERR_OK) {
     printf("mqtt_connect return %d\n", err);
   }
@@ -95,11 +74,8 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
   err_t err;
   if(status == MQTT_CONNECT_ACCEPTED) {
     printf("mqtt_connection_cb: Successfully connected\n");
-    uart_send(&"MQTT_CONNECTED");
-
     /* Setup callback for incoming publish requests */
     mqtt_set_inpub_callback(client, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, arg);
-
     /* Subscribe to a topic named "sub_topic" with QoS level 1, call mqtt_sub_request_cb with result */
     err = mqtt_subscribe(client, "test/sub_topic", 1, mqtt_sub_request_cb, arg);
 
@@ -108,9 +84,6 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
     }
   } else {
     printf("mqtt_connection_cb: Disconnected, reason: %d\n", status);
-
-    /* Its more nice to be connected, so try to reconnect */
-    //example_do_connect(client);
   }
 }
 
@@ -186,7 +159,7 @@ static void mqtt_pub_request_cb(void *arg, err_t result)
 /**
  * Publish Data
  */
-static void example_publish(mqtt_client_t *client, void *arg)
+static void data_mqtt_publish(mqtt_client_t *client, void *arg)
 {
   nPubCounter++;
   sprintf(pub_payload, "PubData: 0x%X", (unsigned int) nPubCounter);
@@ -201,29 +174,20 @@ static void example_publish(mqtt_client_t *client, void *arg)
   if(err != ERR_OK) {
     printf("Publish err: %d\n", err);
   }
-  uart_send(pub_payload);
+ 
 }
 
 
 /**
  * Disconnect from server
  */
-static void example_disconnect(mqtt_client_t *client)
+static void data_mqtt_disconnect(mqtt_client_t *client)
 {
 	mqtt_disconnect(client);
 }
 
-/*
 
-((((x) & (u32_t)0x000000ffUL) << 24) | (((x) & (u32_t)0x0000ff00UL) << 8) | (((x) & (u32_t)0x00ff0000UL) >> 8) | (((x) & (u32_t)0xff000000UL) >> 24))
-*/
-ip_addr_t ipHost;
-static ip_addr_t primaryDnsServer = IPADDR4_INIT_BYTES(8,8,8,8);;
-void connectOK(const char *name, const ip_addr_t *ipaddr, void *callback_arg){
-  ipHost = *ipaddr;
- // my_printf("Host Ip %s\r\n",ipaddr->addr);                                 
-}
-char Host[]="api.thingspeak.com";
+
 /**
   * @brief  mqtt client thread
   * @param arg: pointer on argument(not used here)
@@ -234,25 +198,26 @@ static void mqtt_client_thread(void *arg)
   /* Connect to server */
   dns_init(); 
   dns_setserver(0,&primaryDnsServer);
-  dns_gethostbyname(Host,&ipHost,connectOK,NULL);
-  mqtt_connect(&mqtt_client);
+  dns_gethostbyname(Host, &ipHost, dns_get_ip_from_host_callback, NULL);
+
+  mqtt_connect(&test_mqtt_client);
 
   while(1)
   {
 	  vTaskDelay(1000);
 
 	  /* while connected, publish every second */
-	  if(mqtt_client_is_connected(&mqtt_client))
+	  if(mqtt_client_is_connected(&test_mqtt_client))
 	  {
-		  example_publish(&mqtt_client, NULL);
+		  data_mqtt_publish(&test_mqtt_client, NULL);
 	  }
 	  else
 	  {
 		  /* Connect to server */
-		  mqtt_connect(&mqtt_client);
+		  mqtt_connect(&test_mqtt_client);
 	  }
   }
-  //example_disconnect(&mqtt_client);
+  data_mqtt_disconnect(&test_mqtt_client);
 }
 
 /* Public functions ---------------------------------------------------------*/
@@ -265,4 +230,13 @@ static void mqtt_client_thread(void *arg)
 void mqtt_client_init()
 {
   sys_thread_new("MQTT", mqtt_client_thread, NULL, DEFAULT_THREAD_STACKSIZE, MQTT_CLIENT_THREAD_PRIO);
+}
+
+/**
+((((x) & (u32_t)0x000000ffUL) << 24) | (((x) & (u32_t)0x0000ff00UL) << 8) | (((x) & (u32_t)0x00ff0000UL) >> 8) | (((x) & (u32_t)0xff000000UL) >> 24))
+*/
+
+void dns_get_ip_from_host_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg){
+  ipHost = *ipaddr;
+  state_get_ip_from_host = 1;                               
 }

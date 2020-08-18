@@ -183,7 +183,9 @@ Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dcmi_ex.c \
 User/httpserver-netconn.c \
 Middlewares/Third_Party/LwIP/src/apps/http/httpd.c \
 Middlewares/Third_Party/LwIP/src/apps/http/fs.c \
-User/http_cgi_ssi.c
+User/http_cgi_ssi.c \
+User/mqtt_thread.c 
+
 
 # ASM sources
 ASM_SOURCES =  \
