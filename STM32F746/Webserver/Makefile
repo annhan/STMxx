@@ -185,7 +185,8 @@ Middlewares/Third_Party/LwIP/src/apps/http/httpd.c \
 Middlewares/Third_Party/LwIP/src/apps/http/fs.c \
 User/http_cgi_ssi.c \
 User/mqtt_thread.c \
-User/http_post.c
+User/http_post.c \
+User/ValidataIpAddress.c
 
 
 # ASM sources

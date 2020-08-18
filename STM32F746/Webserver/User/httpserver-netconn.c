@@ -22,6 +22,7 @@ static void http_server_netconn_thread(void *arg)
   httpd_init();
   mySSIinit();
   myCGIinit();
+  
   while(1) {}
 }
 

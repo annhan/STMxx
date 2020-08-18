@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "httpserver-netconn.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -1625,6 +1626,7 @@ void StartDefaultTask(void *argument)
   uint32_t dem = 0;
   /* Infinite loop */
   my_printf("Begin Loop defau \r\n");
+  mqtt_client_init();
   for(;;)
   {
     osThreadTerminate(NULL);
