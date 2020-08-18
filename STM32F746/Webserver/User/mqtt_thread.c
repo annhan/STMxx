@@ -14,7 +14,7 @@
 #include "lwip/apps/mqtt.h"
 #include "lwip/apps/mqtt_opts.h"
 #include "uart.h"
-
+#include "lwip/dns.h"
 #include "mqtt_thread.h"
 #include "network_para.h"
 /* Private typedef -----------------------------------------------------------*/
@@ -213,7 +213,17 @@ static void example_disconnect(mqtt_client_t *client)
 	mqtt_disconnect(client);
 }
 
+/*
 
+((((x) & (u32_t)0x000000ffUL) << 24) | (((x) & (u32_t)0x0000ff00UL) << 8) | (((x) & (u32_t)0x00ff0000UL) >> 8) | (((x) & (u32_t)0xff000000UL) >> 24))
+*/
+ip_addr_t ipHost;
+static ip_addr_t primaryDnsServer = IPADDR4_INIT_BYTES(8,8,8,8);;
+void connectOK(const char *name, const ip_addr_t *ipaddr, void *callback_arg){
+  ipHost = *ipaddr;
+ // my_printf("Host Ip %s\r\n",ipaddr->addr);                                 
+}
+char Host[]="api.thingspeak.com";
 /**
   * @brief  mqtt client thread
   * @param arg: pointer on argument(not used here)
@@ -222,6 +232,9 @@ static void example_disconnect(mqtt_client_t *client)
 static void mqtt_client_thread(void *arg)
 {
   /* Connect to server */
+  dns_init(); 
+  dns_setserver(0,&primaryDnsServer);
+  dns_gethostbyname(Host,&ipHost,connectOK,NULL);
   mqtt_connect(&mqtt_client);
 
   while(1)
