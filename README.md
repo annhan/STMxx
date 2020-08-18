@@ -6,5 +6,10 @@
 6. [FreeRTOS](/FreeRTOS) các bài freertos(thread, mutex,queue ...)
 7. [C++ ]() change to c++ project.
 8. [Web server Stm32f746]() tạo web interfaces với ssi, cgi
-9. Web server lwip với httpd
-10. [Mqtt stm32f746]() lwip 
+9. [Mqtt stm32f746]() lwip 
+
+Todo:
+
+1. ModbusRTU
+2. SDCard
+3. 
