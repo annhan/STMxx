@@ -205,13 +205,13 @@ input[type=text]:focus {
 		<p1 style="color:black">Mask address:</p1>
 	</div>
 	<div width="50%" >
-		<input  width="100%" type="text" id="Mask_text" name="IP_text"  placeholder="<!--#sub-->"  >
+		<input  width="100%" type="text" id="Mask_text" name="IP_text"  value="<!--#sub-->"  >
 	</div>
 	<div width="50%" >
 		<p1 style="color:black">Gateway address:</p1>
 	</div>
 	<div width="50%" >
-		<input  width="100%" type="text" id="Gateway_text" name="IP_text" placeholder="<!--#Gaway-->" >
+		<input  width="100%" type="text" id="Gateway_text" name="IP_text" value="<!--#Gaway-->" >
 	</div> 
 	<input type="button" class="buttonSend" value="update" onclick="ValidateIPaddress()" >	 
 </div> 
@@ -231,19 +231,19 @@ input[type=text]:focus {
 		<p1 style="color:black">Port MQTT:</p1>
 	</div>
 	<div width="50%" >
-		<input  width="100%" type="text" id="Port_MQTT_Text" name="Port_MQTT_Text"  placeholder="<!--#pMQ-->"  >
+		<input  width="100%" type="text" id="Port_MQTT_Text" name="Port_MQTT_Text"  value="<!--#pMQ-->"  >
 	</div>
 	<div width="50%" >
 		<p1 style="color:black">Username:</p1>
 	</div>
 	<div width="50%" >
-		<input  width="100%" type="text" id="user_MQTT_text" name="user_MQTT_text" placeholder="<!--#uMQ-->" >
+		<input  width="100%" type="text" id="user_MQTT_text" name="user_MQTT_text" value="<!--#uMQ-->" >
 	</div> 
 	<div width="50%" >
 		<p1 style="color:black">Password:</p1>
 	</div>
 	<div width="50%" >
-		<input  width="100%" type="password" id="Pas_MQTT_Text" name="Pas_MQTT_Text" placeholder="<!--#pMQ-->" >
+		<input  width="100%" type="password" id="Pas_MQTT_Text" name="Pas_MQTT_Text" value="<!--#paMQ-->" >
 	</div> 
 	<input type="button" class="buttonSend" value="update GET" onclick="sendNewMQTT()" >	 
   <input type="button" class="buttonSend" value="update POST" onclick="sendNewMqttPost()" >	 
