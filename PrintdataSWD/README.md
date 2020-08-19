@@ -1,3 +1,79 @@
+
+# ***Debug GBD***
+
+***Visual Stdio***
+--------
+Configuring VS Code
+Open the Debug panel (CTRL + SHIFT + D) and select “Add Configuration > GDB” through the top left dropdown arrow. Create a GDB configuration in launch.json and add the following. Note: Change the paths in “target”, “gdbpath”, and “autorun” to the correct locations.
+```
+{
+    "name": "GDB",
+    "type": "gdb",
+    "request": "launch",
+    "cwd": "${workspaceRoot}",
+    "target": "${workspaceRoot}/.pioenvs/nucleo_f303k8/firmware.elf",
+    "gdbpath" : "C:/STM32Toolchain/gcc-arm/5.4 2016q3/bin/arm-none-eabi-gdb.exe",
+    "autorun": [
+        "target remote localhost:3333",
+        "symbol-file ./.pioenvs/nucleo_f303k8/firmware.elf",
+        "monitor reset"
+        ]
+}
+```
+https://www.justinmklam.com/posts/2017/10/vscode-debugger-setup/
+
+**Run GBD SERVER***
+-----------
+
+- Makefile add: 
+```
+load:
+    openocd -f board/stm32f4.cfg
+```
+tên board tùy thuộc vào loại mình dùng.
+Để running openocd server tại port 3333
+
+***OpenOCD GBD Client***
+----------
+
+## ***Putty client***
+----------
+
+- Hostname : localhosst
+- Port : 4444
+- Chọn Telnet
+- Khi dùng telnet ta bỏ chữ monitor giống trông câu lệnh
+
+***Dùng MINGW64 client***
+--------
+Type ```arm-none-eabi-gbd.exe``` -> ```target remote localhost:3333``` để mở openocd terminal.
+
+- ```monitor reset init```
+
+- ```monitor reset halt``` reset micro
+
+- ```monitor resume```
+
+- ```monitor reset``` reset
+
+- ```monitor halt``` stop
+
+- ```monitor resume```
+
+- ```monitor mdw 0x20000000 4``` Read 4 works tại địa chỉ này, địa chỉ này ứng với tên biến nào ta xem trong file ```.map``` của thư mục build.
+
+    Add breakpoint là để chương trình chạy đến diểm breakpoint sẽ dừng và ta debug thanh ghi tại các lệnh tiếp theo.
+
+- ```quit```
+
+- ```monitor dp 0x080000C0 4 hw``` set breakpoint tại địa chỉ với chiều dài works 
+
+- ```monitor resume```
+
+- ```monitor reset```
+
+- ```monitor rdp 0x0800000C0  ``` remove breakpoint
+
 # ***Debug Printf***
 
 ***Khai báo clock trong Cube***
@@ -33,9 +109,8 @@ int fputc(int ch, FILE *f) {
 }
 /* USER CODE END 4 */
 ```
-```
+```c
      printf("test text \n");
-/* US
 ```
 ***Khai báo phần mềm***
 ------------
@@ -44,24 +119,3 @@ int fputc(int ch, FILE *f) {
 1. KeilC
 2. OpenOCD
 3. STLink Utility.
-
-# ***Debug GBD***
-
-Configuring VS Code
-Open the Debug panel (CTRL + SHIFT + D) and select “Add Configuration > GDB” through the top left dropdown arrow. Create a GDB configuration in launch.json and add the following. Note: Change the paths in “target”, “gdbpath”, and “autorun” to the correct locations.
-```
-{
-    "name": "GDB",
-    "type": "gdb",
-    "request": "launch",
-    "cwd": "${workspaceRoot}",
-    "target": "${workspaceRoot}/.pioenvs/nucleo_f303k8/firmware.elf",
-    "gdbpath" : "C:/STM32Toolchain/gcc-arm/5.4 2016q3/bin/arm-none-eabi-gdb.exe",
-    "autorun": [
-        "target remote localhost:3333",
-        "symbol-file ./.pioenvs/nucleo_f303k8/firmware.elf",
-        "monitor reset"
-        ]
-}
-```
-https://www.justinmklam.com/posts/2017/10/vscode-debugger-setup/
