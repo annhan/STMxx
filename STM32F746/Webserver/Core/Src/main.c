@@ -94,6 +94,11 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 256 * 4
 };
 /* USER CODE BEGIN PV */
+osMutexId_t osMu_Printhandle;
+const osMutexAttr_t osMu_print_attributes = {
+  .name = "osMu_print"
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -194,6 +199,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
+  osMu_Printhandle = osMutexNew(&osMu_print_attributes);
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
