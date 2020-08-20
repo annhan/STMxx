@@ -3,3 +3,4 @@
 *.lst
 *.d
 STM32F746/Test/*
+cmsis-svd-master/*
