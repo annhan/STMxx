@@ -119,6 +119,20 @@ int fputc(int ch, FILE *f) {
 }
 /* USER CODE END 4 */
 ```
+
+Hoac trong ham ```__write```
+
+```c
+int _write(int32_t file, uint8_t *ptr, int32_t len)
+{
+  /* Implement your write code here, this is used by puts and printf for example */
+  int i=0;
+  for(i=0 ; i<len ; i++)
+  ITM_SendChar((*ptr++));
+  return len;
+}
+```
+
 ```c
      printf("test text \n");
 ```
