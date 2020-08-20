@@ -8,8 +8,3 @@
 8. [Web server Stm32f746](https://github.com/annhan/STMxx/tree/master/STM32F746/Webserver) tạo web interfaces với ssi, cgi
 9. [Mqtt stm32f746](https://github.com/annhan/STMxx/tree/master/STM32F746/Webserver) lwip 
 
-Todo:
-
-1. ModbusRTU
-2. SDCard
-3. 
