@@ -26,7 +26,9 @@ static void http_server_netconn_thread(void *arg)
   mySSIinit();
   myCGIinit();
   
-  while(1) {}
+  while(1) {
+     osDelay(1000);
+  }
 }
 
 /**

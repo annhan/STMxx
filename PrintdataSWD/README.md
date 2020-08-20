@@ -1,5 +1,13 @@
 
 # ***Debug GBD***
+***makefile***
+-----
+```
+gdb: all
+	arm-none-eabi-gdb $(FIRMWARE) -x openocd.gdbinit
+```
+ta chi can make gdp laf se vao gaio dien gdp debug
+
 
 ***Visual Stdio***
 --------
@@ -67,6 +75,8 @@ Type ```arm-none-eabi-gbd.exe``` -> ```target remote localhost:3333``` để m�
 - ```quit```
 
 - ```monitor dp 0x080000C0 4 hw``` set breakpoint tại địa chỉ với chiều dài works 
+
+Phieen ban ```monitor wp``` hoac ```rwp```
 
 - ```monitor resume```
 

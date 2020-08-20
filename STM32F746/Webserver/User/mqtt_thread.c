@@ -70,10 +70,10 @@ static void mqtt_connect(mqtt_client_t *client)
   /* Setup an empty client info structure */
   memset(&ci, 0, sizeof(ci));
   ci.client_id = "NhanTest";
-  ci.client_user = net_para.mqttUser;
-  ci.client_pass = net_para.mqttPass;
-  //strcpy(ci.client_user,net_para.mqttUser);
-  //strcpy(ci.client_pass ,net_para.mqttPass);
+  //ci.client_user = net_para.mqttUser;
+  //ci.client_pass = net_para.mqttPass;
+  strcpy(ci.client_user,net_para.mqttUser);
+  strcpy(ci.client_pass ,net_para.mqttPass);
   err = mqtt_client_connect(client, &ipHost, net_para.mqttPort, mqtt_connection_cb, NULL, &ci);
   if(err != ERR_OK) {
     
@@ -200,7 +200,7 @@ static void mqtt_client_thread(void *arg)
   
   while(1)
   {
-	  vTaskDelay(1000);
+	  osDelay(1000);
 
 	  /* while connected, publish every second */
 	  if(mqtt_client_is_connected(&test_mqtt_client))
@@ -235,6 +235,11 @@ void mqtt_client_init()
 */
 
 void dns_get_ip_from_host_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg){
+  
   ipHost = *ipaddr;
-  state_get_ip_from_host = 1;                               
+  state_get_ip_from_host = 1;      
+  my_printf("IP HOST %d.%d.%d.%d\r\n",     (((ipHost.addr) & (u32_t)0xff000000UL) >> 24) , \
+                                           (((ipHost.addr) & (u32_t)0x00ff0000UL) >>16) ,\
+                                           (((ipHost.addr) & (u32_t)0x0000ff00UL) >> 8) ,\
+                                           (((ipHost.addr) & (u32_t)0x000000ffUL) ))  ;                     
 }

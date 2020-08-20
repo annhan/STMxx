@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "freeRTOS_heap_space.h"
 #include "freertos_var.h"
+#include "printEx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,7 +70,9 @@ trong freertos_conffig.h
 */
 void vApplicationIdleHook( void )
 {  
+    
     if (SystemStats_.is_Ready) {
+      
         SystemStats_.uptime = xTaskGetTickCount();
         SystemStats_.min_heap_space = xPortGetMinimumEverFreeHeapSize();
         SystemStats_.min_stack_space_default= uxTaskGetStackHighWaterMark(defaultTaskHandle) * sizeof(StackType_t);

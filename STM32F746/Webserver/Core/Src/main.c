@@ -25,7 +25,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "httpserver-netconn.h"
+#include "mqtt_thread.h"
 #include "freeRTOS_heap_space.h"
+#include "printEx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -89,7 +91,7 @@ osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 4096 * 4
+  .stack_size = 256 * 4
 };
 /* USER CODE BEGIN PV */
 /* USER CODE END PV */
@@ -212,6 +214,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  SystemStats_.is_Ready = true;
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -222,12 +225,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   SystemStats_.is_Ready = true;
   my_printf("init finish  \r\n");
-  while (1)
-  {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
   /* USER CODE END 3 */
 }
 
@@ -1631,10 +1629,12 @@ void StartDefaultTask(void *argument)
   mqtt_client_init();
   for(;;)
   {
-    osThreadTerminate(NULL);
+    //osThreadTerminate(NULL);
     dem ++;
     if (dem >100){
-      my_printf("DefaultTask\r\n");
+      my_printf("Gia tri %d %ld , %ld , %ld\r\n",SystemStats_.is_Ready, SystemStats_.uptime ,\
+                                             SystemStats_.min_heap_space, \
+                                             SystemStats_.min_stack_space_default);
       dem =0;
     }
     
