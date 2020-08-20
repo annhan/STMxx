@@ -7,15 +7,18 @@
 #include <stdio.h>
 #include "httpserver-netconn.h"
 #include "cmsis_os.h"
+#include "httpd.h"
 #include "stm32f7xx.h"                  
 
 #define WEBSERVER_THREAD_PRIO    ( tskIDLE_PRIORITY + 4 )
 u32_t nPageHits = 0;
 
-extern mySSIinit();
-extern myCGIinit();
 
+//void httpd_init(void);
+extern int mySSIinit();
+extern int myCGIinit();
 
+osThreadId_t task_web_server;
 static void http_server_netconn_thread(void *arg)
 {  
 
@@ -33,6 +36,6 @@ static void http_server_netconn_thread(void *arg)
   */
 void http_server_netconn_init()
 {
-  sys_thread_new("HTTP", http_server_netconn_thread, NULL, DEFAULT_THREAD_STACKSIZE, WEBSERVER_THREAD_PRIO);
+   task_web_server=sys_thread_new("HTTP", http_server_netconn_thread, NULL, DEFAULT_THREAD_STACKSIZE, WEBSERVER_THREAD_PRIO);
 }
 

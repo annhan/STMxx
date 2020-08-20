@@ -36,7 +36,7 @@
 void Error_Handler(void);
 
 /* USER CODE BEGIN 1 */
-
+osThreadId_t lwip_set_link;
 /* USER CODE END 1 */
 /* Semaphore to signal Ethernet Link state update */
 osSemaphoreId Netif_LinkSemaphore = NULL;

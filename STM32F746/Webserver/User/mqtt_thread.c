@@ -34,7 +34,7 @@ mqtt_client_t test_mqtt_client;
 static char pub_payload[40];
 ip_addr_t ipHost;
 static ip_addr_t primaryDnsServer = IPADDR4_INIT_BYTES(8,8,8,8);;
-
+osThreadId_t task_mqtt;
 /* Private function prototypes -----------------------------------------------*/
 //static void example_connect(mqtt_client_t *client);
 void dns_get_ip_from_host_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg);
@@ -70,8 +70,10 @@ static void mqtt_connect(mqtt_client_t *client)
   /* Setup an empty client info structure */
   memset(&ci, 0, sizeof(ci));
   ci.client_id = "NhanTest";
-  strcpy(ci.client_user,net_para.mqttUser);
-  strcpy(ci.client_pass ,net_para.mqttPass);
+  ci.client_user = net_para.mqttUser;
+  ci.client_pass = net_para.mqttPass;
+  //strcpy(ci.client_user,net_para.mqttUser);
+  //strcpy(ci.client_pass ,net_para.mqttPass);
   err = mqtt_client_connect(client, &ipHost, net_para.mqttPort, mqtt_connection_cb, NULL, &ci);
   if(err != ERR_OK) {
     
@@ -178,11 +180,11 @@ static void data_mqtt_disconnect(mqtt_client_t *client)
  * Get Ip Address frome Hostname
  */
 void getIpFromeHost(char* host){
-  if (is_valid_ip == 0){
-    dns_gethostbyname(&net_para.serverMQTT, &ipHost, dns_get_ip_from_host_callback, NULL);
+  if (is_valid_ip(host) == 0){
+    dns_gethostbyname(net_para.serverMQTT, &ipHost, dns_get_ip_from_host_callback, NULL);
     return;
   } 
-  ipaddr_aton(host,ipHost);
+  ipaddr_aton(host,&ipHost);
 }
 
 /**
@@ -207,7 +209,8 @@ static void mqtt_client_thread(void *arg)
 	  }
 	  else
 	  {
-      dns_gethostbyname(&net_para.serverMQTT, &ipHost, dns_get_ip_from_host_callback, NULL);
+      //getIpFromeHost();
+      dns_gethostbyname(net_para.serverMQTT, &ipHost, dns_get_ip_from_host_callback, NULL);
       if (state_get_ip_from_host) mqtt_connect(&test_mqtt_client);
       vTaskDelay(3000);
 	  }
@@ -224,7 +227,7 @@ static void mqtt_client_thread(void *arg)
   */
 void mqtt_client_init()
 {
-  sys_thread_new("MQTT", mqtt_client_thread, NULL, DEFAULT_THREAD_STACKSIZE, MQTT_CLIENT_THREAD_PRIO);
+  task_mqtt = sys_thread_new("MQTT", mqtt_client_thread, NULL, DEFAULT_THREAD_STACKSIZE, MQTT_CLIENT_THREAD_PRIO);
 }
 
 /**

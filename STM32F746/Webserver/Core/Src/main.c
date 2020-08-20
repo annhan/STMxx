@@ -25,12 +25,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "httpserver-netconn.h"
-
+#include "freeRTOS_heap_space.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 Net_conf net_para;
+SystemStats_t SystemStats_;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -219,6 +220,7 @@ int main(void)
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  SystemStats_.is_Ready = true;
   my_printf("init finish  \r\n");
   while (1)
   {
