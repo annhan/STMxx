@@ -70,10 +70,12 @@ static void mqtt_connect(mqtt_client_t *client)
   /* Setup an empty client info structure */
   memset(&ci, 0, sizeof(ci));
   ci.client_id = "NhanTest";
-  //ci.client_user = net_para.mqttUser;
-  //ci.client_pass = net_para.mqttPass;
-  strcpy(ci.client_user,net_para.mqttUser);
-  strcpy(ci.client_pass ,net_para.mqttPass);
+  ci.client_user = net_para.mqttUser;
+  ci.client_pass = net_para.mqttPass;
+  //strcpy(ci.client_user , &net_para.mqttUser);
+  //strcpy(ci.client_pass , &net_para.mqttPass);
+  my_printf("user  %s \r\n", ci.client_user);
+  my_printf("pass  %s \r\n", ci.client_pass);
   err = mqtt_client_connect(client, &ipHost, net_para.mqttPort, mqtt_connection_cb, NULL, &ci);
   if(err != ERR_OK) {
     
@@ -90,8 +92,8 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
   if(status == MQTT_CONNECT_ACCEPTED) {
     my_printf("mqtt_connection_cb: Successfully connected\n");
     mqtt_set_inpub_callback(client, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, arg);
-    err = mqtt_subscribe(client, "test/sub_topic", 1, mqtt_sub_request_cb, arg);
-      mqtt_subscribe(client, "TestHome", 1, mqtt_sub_request_cb, arg);
+     err = mqtt_subscribe(client, "/annhandt09@gmail.com/STM32", 1, mqtt_sub_request_cb, arg);
+   // mqtt_subscribe(client, "/annhandt09@gmail.com/testSTM", 1, mqtt_sub_request_cb, arg);
     if(err != ERR_OK) {
       my_printf("mqtt_subscribe return: %d\n", err);
     }
@@ -116,9 +118,9 @@ static int inpub_id;
 static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
   my_printf("Incoming publish at topic %s with total length %u\n", topic, (unsigned int)tot_len);
-  if(strcmp(topic, "TestHome") == 0) {
+  if(strcmp(topic, "/annhandt09@gmail.com/STM32") == 0) {
     inpub_id = 0;
-  } else if(topic[0] == 'A') {
+  } else if(topic[0] == '/annhandt09@gmail.com/testSTM') {
     inpub_id = 1;
   } else {
     inpub_id = 2;
@@ -157,11 +159,11 @@ static void mqtt_pub_request_cb(void *arg, err_t result)
 static void data_mqtt_publish(mqtt_client_t *client, void *arg)
 {
   nPubCounter++;
-  sprintf(pub_payload, "PubData: 0x%X", (unsigned int) nPubCounter);
+  sprintf(pub_payload, "DA: 0x%X", (unsigned int) nPubCounter);
   err_t err;
-  u8_t qos = 2; /* 0 1 or 2, see MQTT specification */
+  u8_t qos = 0; /* 0 1 or 2, see MQTT specification */
   u8_t retain = 0; /* No don't retain the payload... */
-  err = mqtt_publish(client, "test/pub_topic", pub_payload, strlen(pub_payload), qos, retain, mqtt_pub_request_cb, arg);
+  err = mqtt_publish(client, "/annhandt09@gmail.com/testSTM", pub_payload, strlen(pub_payload), qos, retain, mqtt_pub_request_cb, arg);
   if(err != ERR_OK) {
     my_printf("Publish err: %d\n", err);
   }
