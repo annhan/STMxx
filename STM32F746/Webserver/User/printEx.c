@@ -3,6 +3,7 @@
 /**
  * Print
  */
+constexpr uint32_t PROTOCOL_SERVER_TIMEOUT_MS = 10;
 void vprint(const char *fmt, va_list argp)
 {
     char string[200];
@@ -12,8 +13,8 @@ void vprint(const char *fmt, va_list argp)
     }
 }
 void my_printf(const char *fmt, ...) // custom printf() function
-{  
-    osMutexWait(osMu_Printhandle,osWaitForever);
+{  if (osMutexWait(osMu_Printhandle, PROTOCOL_SERVER_TIMEOUT_MS) != osOK)
+    return ;
         va_list argp;
         va_start(argp, fmt); //lấy các tham số sau tham số fmt
         vprint(fmt, argp);
