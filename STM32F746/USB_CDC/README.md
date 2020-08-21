@@ -37,3 +37,36 @@
 
 ** Fix loi**
 ----------
+
+
+File viet laf ```usb_cdc_if.c```
+```c
+#define APP_RX_DATA_SIZE  2048
+#define APP_TX_DATA_SIZE  2048
+
+//Du lieu truyen va nhan se duoc liuu vao bien nay
+/* Received Data over USB are stored in this buffer       */
+
+uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
+
+/* Send Data over USB CDC are stored in this buffer       */
+
+uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
+
+```
+
+hamf callback nhan data
+```c
+static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len){
+    /**
+     * Nhan data
+     * /
+     USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]); //Xoa du lieu sau khi nhan
+     USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+     return (USBD_OK);
+}
+```
+Ham truyen data
+```c
+uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
+```
