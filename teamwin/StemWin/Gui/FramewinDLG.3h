@@ -1,0 +1,27 @@
+#ifndef __MAIN_FRAME
+#define __MAIN_FRAME
+
+#include "DIALOG.h"
+
+extern WM_HWIN hWin;
+;
+
+/*********************************************************************
+*
+*       Defines
+*
+**********************************************************************
+*/
+#define ID_FRAMEWIN_0  (GUI_ID_USER + 0x00)
+#define ID_IMAGE_0  (GUI_ID_USER + 0x01)
+#define ID_LISTBOX_0  (GUI_ID_USER + 0x02)
+#define ID_BUTTON_0  (GUI_ID_USER + 0x03)
+#define ID_CHECKBOX_0  (GUI_ID_USER + 0x04)
+
+#define ID_IMAGE_0_IMAGE_0   0x00
+
+
+
+void CreateFramewin(void);
+
+#endif
